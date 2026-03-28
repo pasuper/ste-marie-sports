@@ -27,7 +27,7 @@ Thumbs.db
 npm-debug.log*
 
 # Deploy temp
-deploy/
+# deploy/ - included in repo for cPanel hosting
 
 # Media uploads
 public/media/
