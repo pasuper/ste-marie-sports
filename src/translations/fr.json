@@ -1,0 +1,154 @@
+{
+  "header": {
+    "freeShipping": "Livraison gratuite sur commandes 99$+",
+    "help": "Aide",
+    "orderTracking": "Suivi de commande",
+    "searchPlaceholder": "Rechercher casques, vestes, pièces...",
+    "account": "Compte",
+    "favorites": "Favoris",
+    "cart": "Panier"
+  },
+  "nav": {
+    "home": "Accueil",
+    "myAccount": "Mon compte",
+    "helmets": "Casques",
+    "clothing": "Vêtements",
+    "parts": "Pièces",
+    "accessories": "Accessoires",
+    "brands": "Marques",
+    "vehicles": "Véhicules",
+    "sales": "Soldes",
+    "blog": "Blog"
+  },
+  "hero": {
+    "tag": "Saison Hiver 2024",
+    "title": "Équipement Motoneige & Powersports",
+    "subtitle": "Préparez-vous pour l'aventure avec notre sélection d'équipements premium pour motoneige, VTT et moto.",
+    "shopNow": "Magasiner",
+    "viewSales": "Voir les soldes"
+  },
+  "categories": {
+    "title": "Magasiner par catégorie",
+    "viewAll": "Voir toutes les catégories",
+    "helmets": "Casques",
+    "jackets": "Vestes",
+    "gloves": "Gants",
+    "boots": "Bottes",
+    "parts": "Pièces",
+    "accessories": "Accessoires",
+    "products": "produits"
+  },
+  "promoBanner": {
+    "text": "Livraison gratuite",
+    "description": "sur toutes les commandes de 99$ et plus au Canada",
+    "learnMore": "En savoir plus"
+  },
+  "partsFinder": {
+    "title": "Trouver des pièces",
+    "subtitle": "Sélectionnez votre véhicule pour voir les pièces compatibles",
+    "oem": "Pièces OEM",
+    "oemDesc": "Pièces d'origine du fabricant",
+    "aftermarket": "Pièces Après-marché",
+    "aftermarketDesc": "Alternatives de performance",
+    "year": "Année",
+    "make": "Marque",
+    "model": "Modèle",
+    "trim": "Version",
+    "selectYear": "Sélectionner l'année",
+    "selectMake": "Sélectionner la marque",
+    "selectModel": "Sélectionner le modèle",
+    "selectTrim": "Sélectionner la version",
+    "search": "Rechercher"
+  },
+  "featuredProducts": {
+    "title": "Produits populaires",
+    "viewAll": "Voir tout",
+    "addToCart": "Ajouter",
+    "sale": "Solde",
+    "new": "Nouveau",
+    "popular": "Populaire",
+    "premium": "Premium"
+  },
+  "saleBanner": {
+    "tag": "Offre limitée",
+    "title": "Jusqu'à 40% de rabais",
+    "description": "Sur une sélection de casques et équipements. Offre valide jusqu'au 31 décembre.",
+    "cta": "Voir les soldes"
+  },
+  "brands": {
+    "title": "Nos marques",
+    "viewAll": "Toutes les marques"
+  },
+  "blog": {
+    "title": "Guides & Conseils",
+    "viewAll": "Voir le blog",
+    "buyingGuide": "Guide d'achat",
+    "tips": "Conseils",
+    "top10": "Top 10"
+  },
+  "footer": {
+    "customerService": "Service Client",
+    "contactUs": "Contactez-nous",
+    "shippingReturns": "Livraison & Retours",
+    "faq": "FAQ",
+    "sizeGuide": "Guide des tailles",
+    "aboutUs": "À propos",
+    "ourStory": "Notre histoire",
+    "careers": "Carrières",
+    "press": "Presse",
+    "sustainability": "Durabilité",
+    "followUs": "Suivez-nous",
+    "newsletter": "Infolettre",
+    "newsletterPlaceholder": "Votre courriel",
+    "subscribe": "S'abonner",
+    "allRightsReserved": "Tous droits réservés"
+  },
+  "common": {
+    "vehicles": "Véhicules",
+    "accessories": "Accessoires",
+    "parts": "Pièces",
+    "loading": "Chargement...",
+    "edit": "Modifier",
+    "optional": "optionnel",
+    "cancel": "Annuler",
+    "saving": "Enregistrement...",
+    "save": "Enregistrer",
+    "delete": "Supprimer"
+  },
+  "errors": {
+    "loadFailed": "Erreur lors du chargement",
+    "saveFailed": "Erreur lors de la sauvegarde",
+    "deleteFailed": "Erreur lors de la suppression",
+    "updateFailed": "Erreur lors de la mise à jour"
+  },
+  "addresses": {
+    "title": "Mes adresses",
+    "subtitle": "Gérez vos adresses de livraison et de facturation",
+    "myAddresses": "Mes adresses",
+    "add": "Ajouter",
+    "default": "Par défaut",
+    "setDefault": "Définir par défaut",
+    "setAsDefault": "Définir comme adresse par défaut",
+    "empty": "Aucune adresse enregistrée",
+    "addFirst": "Ajouter une adresse",
+    "edit": "Modifier l'adresse",
+    "new": "Nouvelle adresse",
+    "addButton": "Ajouter l'adresse",
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer cette adresse?",
+    "createSuccess": "Adresse ajoutée avec succès",
+    "updateSuccess": "Adresse mise à jour avec succès",
+    "deleteSuccess": "Adresse supprimée avec succès"
+  },
+  "form": {
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "company": "Entreprise",
+    "address": "Adresse",
+    "address2": "Appartement, suite, etc.",
+    "city": "Ville",
+    "province": "Province",
+    "postalCode": "Code postal",
+    "phone": "Téléphone",
+    "email": "Courriel"
+  }
+}

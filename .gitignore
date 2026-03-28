@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+
+# Build
+.next/
+dist/
+build/
+.cache/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Deploy temp
+deploy/
+
+# Media uploads
+public/media/
+
+# Old directories (migrated to src/)
+frontend/
+backend/
+
+# SSH keys - NEVER commit
+*.pem
+id_rsa*
+*.key
+
+# TypeScript
+*.tsbuildinfo

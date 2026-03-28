@@ -1,0 +1,154 @@
+{
+  "header": {
+    "freeShipping": "Free shipping on orders $99+",
+    "help": "Help",
+    "orderTracking": "Track Order",
+    "searchPlaceholder": "Search helmets, jackets, parts...",
+    "account": "Account",
+    "favorites": "Favorites",
+    "cart": "Cart"
+  },
+  "nav": {
+    "home": "Home",
+    "myAccount": "My Account",
+    "helmets": "Helmets",
+    "clothing": "Clothing",
+    "parts": "Parts",
+    "accessories": "Accessories",
+    "brands": "Brands",
+    "vehicles": "Vehicles",
+    "sales": "Sales",
+    "blog": "Blog"
+  },
+  "hero": {
+    "tag": "Winter Season 2024",
+    "title": "Snowmobile & Powersports Equipment",
+    "subtitle": "Get ready for adventure with our selection of premium equipment for snowmobiles, ATVs, and motorcycles.",
+    "shopNow": "Shop Now",
+    "viewSales": "View Sales"
+  },
+  "categories": {
+    "title": "Shop by Category",
+    "viewAll": "View all categories",
+    "helmets": "Helmets",
+    "jackets": "Jackets",
+    "gloves": "Gloves",
+    "boots": "Boots",
+    "parts": "Parts",
+    "accessories": "Accessories",
+    "products": "products"
+  },
+  "promoBanner": {
+    "text": "Free shipping",
+    "description": "on all orders $99+ in Canada",
+    "learnMore": "Learn more"
+  },
+  "partsFinder": {
+    "title": "Find Parts",
+    "subtitle": "Select your vehicle to see compatible parts",
+    "oem": "OEM Parts",
+    "oemDesc": "Original manufacturer parts",
+    "aftermarket": "Aftermarket Parts",
+    "aftermarketDesc": "Performance alternatives",
+    "year": "Year",
+    "make": "Make",
+    "model": "Model",
+    "trim": "Trim",
+    "selectYear": "Select year",
+    "selectMake": "Select make",
+    "selectModel": "Select model",
+    "selectTrim": "Select trim",
+    "search": "Search"
+  },
+  "featuredProducts": {
+    "title": "Popular Products",
+    "viewAll": "View all",
+    "addToCart": "Add",
+    "sale": "Sale",
+    "new": "New",
+    "popular": "Popular",
+    "premium": "Premium"
+  },
+  "saleBanner": {
+    "tag": "Limited Time Offer",
+    "title": "Up to 40% Off",
+    "description": "On selected helmets and equipment. Valid until December 31.",
+    "cta": "View Sales"
+  },
+  "brands": {
+    "title": "Our Brands",
+    "viewAll": "All brands"
+  },
+  "blog": {
+    "title": "Guides & Tips",
+    "viewAll": "View blog",
+    "buyingGuide": "Buying Guide",
+    "tips": "Tips",
+    "top10": "Top 10"
+  },
+  "footer": {
+    "customerService": "Customer Service",
+    "contactUs": "Contact Us",
+    "shippingReturns": "Shipping & Returns",
+    "faq": "FAQ",
+    "sizeGuide": "Size Guide",
+    "aboutUs": "About Us",
+    "ourStory": "Our Story",
+    "careers": "Careers",
+    "press": "Press",
+    "sustainability": "Sustainability",
+    "followUs": "Follow Us",
+    "newsletter": "Newsletter",
+    "newsletterPlaceholder": "Your email",
+    "subscribe": "Subscribe",
+    "allRightsReserved": "All rights reserved"
+  },
+  "common": {
+    "vehicles": "Vehicles",
+    "accessories": "Accessories",
+    "parts": "Parts",
+    "loading": "Loading...",
+    "edit": "Edit",
+    "optional": "optional",
+    "cancel": "Cancel",
+    "saving": "Saving...",
+    "save": "Save",
+    "delete": "Delete"
+  },
+  "errors": {
+    "loadFailed": "Failed to load",
+    "saveFailed": "Failed to save",
+    "deleteFailed": "Failed to delete",
+    "updateFailed": "Failed to update"
+  },
+  "addresses": {
+    "title": "My Addresses",
+    "subtitle": "Manage your shipping and billing addresses",
+    "myAddresses": "My Addresses",
+    "add": "Add",
+    "default": "Default",
+    "setDefault": "Set as default",
+    "setAsDefault": "Set as default address",
+    "empty": "No addresses saved",
+    "addFirst": "Add an address",
+    "edit": "Edit address",
+    "new": "New address",
+    "addButton": "Add address",
+    "confirmDelete": "Are you sure you want to delete this address?",
+    "createSuccess": "Address added successfully",
+    "updateSuccess": "Address updated successfully",
+    "deleteSuccess": "Address deleted successfully"
+  },
+  "form": {
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "company": "Company",
+    "address": "Address",
+    "address2": "Apartment, suite, etc.",
+    "city": "City",
+    "province": "Province",
+    "postalCode": "Postal Code",
+    "phone": "Phone",
+    "email": "Email"
+  }
+}
