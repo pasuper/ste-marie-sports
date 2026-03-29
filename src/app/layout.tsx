@@ -16,6 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html>
       <head>
         <meta name="robots" content="noindex, nofollow" />
+        <link rel="stylesheet" href="/styles.css" />
       </head>
       <body>{children}</body>
     </html>

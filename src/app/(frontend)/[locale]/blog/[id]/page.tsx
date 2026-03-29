@@ -1,4 +1,4 @@
-import { getPayload } from '@/lib/payload'
+import { getPayload, asLocale } from '@/lib/payload'
 import { getMediaUrl } from '@/lib/media'
 import Image from 'next/image'
 
@@ -6,8 +6,9 @@ export const revalidate = 3600
 
 export default async function BlogDetailPage({ params }: { params: Promise<{ locale: string; id: string }> }) {
   const { locale, id } = await params
+  const loc = asLocale(locale)
   const payload = await getPayload()
-  const data = await payload.find({ collection: 'pages', where: { slug: { equals: id } }, locale, limit: 1, depth: 1 })
+  const data = await payload.find({ collection: 'pages', where: { slug: { equals: id } }, locale: loc, limit: 1, depth: 1 })
   const post = data.docs[0]
   if (!post) return <div className="container"><h1>{locale === 'fr' ? 'Article non trouvé' : 'Post not found'}</h1></div>
 

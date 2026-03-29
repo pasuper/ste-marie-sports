@@ -1,4 +1,4 @@
-import { getPayload } from '@/lib/payload'
+import { getPayload, asLocale } from '@/lib/payload'
 import { getMediaUrl } from '@/lib/media'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -7,8 +7,9 @@ export const revalidate = 3600
 
 export default async function BlogListPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
+  const loc = asLocale(locale)
   const payload = await getPayload()
-  const pages = await payload.find({ collection: 'pages', where: { template: { equals: 'blog' }, isActive: { equals: true } }, locale, sort: '-createdAt', depth: 1 })
+  const pages = await payload.find({ collection: 'pages', where: { template: { equals: 'blog' }, isActive: { equals: true } }, locale: loc, sort: '-createdAt', depth: 1 })
 
   return (
     <div className="container">

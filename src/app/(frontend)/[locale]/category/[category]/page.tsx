@@ -1,4 +1,4 @@
-import { getPayload } from '@/lib/payload'
+import { getPayload, asLocale } from '@/lib/payload'
 import ProductCard from '@/components/ProductCard'
 import Link from 'next/link'
 
@@ -8,16 +8,17 @@ interface Props { params: Promise<{ locale: string; category: string }>; searchP
 
 export default async function CategoryPage({ params, searchParams }: Props) {
   const { locale, category: categorySlug } = await params
+  const loc = asLocale(locale)
   const { page: pageStr = '1', sort = '-createdAt', brand } = await searchParams
   const page = parseInt(pageStr, 10)
   const payload = await getPayload()
 
-  const categoryData = await payload.find({ collection: 'categories', where: { slug: { equals: categorySlug } }, locale, limit: 1, depth: 1 })
+  const categoryData = await payload.find({ collection: 'categories', where: { slug: { equals: categorySlug } }, locale: loc, limit: 1, depth: 1 })
   const category = categoryData.docs[0]
   if (!category) return <div className="container"><h1>{locale === 'fr' ? 'Catégorie non trouvée' : 'Category not found'}</h1></div>
 
   // Get child categories
-  const children = await payload.find({ collection: 'categories', where: { parent: { equals: category.id } }, locale, limit: 100 })
+  const children = await payload.find({ collection: 'categories', where: { parent: { equals: category.id } }, locale: loc, limit: 100 })
   const categoryIds = [category.id, ...children.docs.map((c: any) => c.id)]
 
   const where: any = { category: { in: categoryIds }, isActive: { equals: true }, variantType: { equals: 'parent' } }
@@ -26,8 +27,8 @@ export default async function CategoryPage({ params, searchParams }: Props) {
     if (brandData.docs[0]) where.brand = { equals: brandData.docs[0].id }
   }
 
-  const products = await payload.find({ collection: 'products', where, locale, page, limit: 24, sort, depth: 1 })
-  const brands = await payload.find({ collection: 'brands', where: { isActive: { equals: true } }, locale, limit: 100, sort: 'name' })
+  const products = await payload.find({ collection: 'products', where, locale: loc, page, limit: 24, sort, depth: 1 })
+  const brands = await payload.find({ collection: 'brands', where: { isActive: { equals: true } }, locale: loc, limit: 100, sort: 'name' })
 
   return (
     <div className="category-page">

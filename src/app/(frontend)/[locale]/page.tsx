@@ -1,4 +1,4 @@
-import { getPayload } from '@/lib/payload'
+import { getPayload, asLocale } from '@/lib/payload'
 import { getMediaUrl } from '@/lib/media'
 import HeroCarousel from '@/components/HeroCarousel'
 import ProductCard from '@/components/ProductCard'
@@ -9,14 +9,32 @@ export const revalidate = 60
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
+  const loc = asLocale(locale)
   const payload = await getPayload()
 
-  const [heroData, brands, categories, products] = await Promise.all([
-    payload.find({ collection: 'hero-sections', where: { pageSlug: { equals: 'home' }, isActive: { equals: true } }, locale, limit: 1, depth: 1 }),
-    payload.find({ collection: 'brands', where: { isFeatured: { equals: true } }, locale, limit: 8, sort: 'sortOrder' }),
-    payload.find({ collection: 'categories', where: { isFeatured: { equals: true } }, locale, limit: 6, sort: 'sortOrder' }),
-    payload.find({ collection: 'products', where: { isFeatured: { equals: true }, isActive: { equals: true }, variantType: { equals: 'parent' } }, locale, limit: 8, depth: 1 }),
-  ])
+  // Hero sections
+  const heroData = await payload.find({ collection: 'hero-sections', where: { isActive: { equals: true } }, locale: loc, limit: 1, depth: 1 })
+
+  // Brands - try featured first, fallback to all active
+  let brands = await payload.find({ collection: 'brands', where: { isFeatured: { equals: true } }, locale: loc, limit: 12, sort: 'sortOrder' })
+  if (brands.docs.length === 0) {
+    brands = await payload.find({ collection: 'brands', where: { isActive: { equals: true } }, locale: loc, limit: 12, sort: 'sortOrder' })
+  }
+
+  // Categories - try featured first, fallback to root categories
+  let categories = await payload.find({ collection: 'categories', where: { isFeatured: { equals: true } }, locale: loc, limit: 8, sort: 'sortOrder' })
+  if (categories.docs.length === 0) {
+    categories = await payload.find({ collection: 'categories', where: { isActive: { equals: true } }, locale: loc, limit: 8, sort: 'sortOrder' })
+  }
+
+  // Products - try featured, fallback to recent with thumbnails
+  let products = await payload.find({ collection: 'products', where: { isFeatured: { equals: true }, isActive: { equals: true }, variantType: { equals: 'parent' } }, locale: loc, limit: 8, depth: 1 })
+  if (products.docs.length === 0) {
+    products = await payload.find({ collection: 'products', where: { isActive: { equals: true }, variantType: { equals: 'parent' }, thumbnail: { exists: true } }, locale: loc, limit: 8, sort: '-createdAt', depth: 1 })
+  }
+  if (products.docs.length === 0) {
+    products = await payload.find({ collection: 'products', where: { isActive: { equals: true } }, locale: loc, limit: 8, sort: '-createdAt', depth: 1 })
+  }
 
   const hero = heroData.docs[0]
 
@@ -24,7 +42,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     <div className="home-page">
       {hero?.slides && <HeroCarousel slides={hero.slides} autoPlay={hero.autoPlay} autoPlayDelay={hero.autoPlayDelay} locale={locale} />}
 
-      {/* Featured Categories */}
+      {/* Categories */}
       {categories.docs.length > 0 && (
         <section className="section">
           <div className="container">
@@ -41,7 +59,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </section>
       )}
 
-      {/* Featured Products */}
+      {/* Products */}
       {products.docs.length > 0 && (
         <section className="section">
           <div className="container">
@@ -55,7 +73,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </section>
       )}
 
-      {/* Featured Brands */}
+      {/* Brands */}
       {brands.docs.length > 0 && (
         <section className="section section--gray">
           <div className="container">

@@ -1,12 +1,13 @@
-import { getPayload } from '@/lib/payload'
+import { getPayload, asLocale } from '@/lib/payload'
 import { notFound } from 'next/navigation'
 
 export const revalidate = 3600
 
 export default async function DynamicPage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
   const { locale, slug } = await params
+  const loc = asLocale(locale)
   const payload = await getPayload()
-  const data = await payload.find({ collection: 'pages', where: { slug: { equals: slug }, isActive: { equals: true } }, locale, limit: 1, depth: 1 })
+  const data = await payload.find({ collection: 'pages', where: { slug: { equals: slug }, isActive: { equals: true } }, locale: loc, limit: 1, depth: 1 })
   const page = data.docs[0]
   if (!page) notFound()
 

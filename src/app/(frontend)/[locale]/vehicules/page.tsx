@@ -1,4 +1,4 @@
-import { getPayload } from '@/lib/payload'
+import { getPayload, asLocale } from '@/lib/payload'
 import { getMediaUrl } from '@/lib/media'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -9,6 +9,7 @@ interface Props { params: Promise<{ locale: string }>; searchParams: Promise<{ p
 
 export default async function VehicleListPage({ params, searchParams }: Props) {
   const { locale } = await params
+  const loc = asLocale(locale)
   const { page: pageStr = '1', condition, type } = await searchParams
   const page = parseInt(pageStr, 10)
   const payload = await getPayload()
@@ -17,7 +18,7 @@ export default async function VehicleListPage({ params, searchParams }: Props) {
   if (condition) where.condition = { equals: condition }
   if (type) where.vehicleType = { equals: type }
 
-  const vehicles = await payload.find({ collection: 'vehicles', where, locale, page, limit: 24, depth: 1, sort: '-createdAt' })
+  const vehicles = await payload.find({ collection: 'vehicles', where, locale: loc, page, limit: 24, depth: 1, sort: '-createdAt' })
 
   const title = locale === 'fr' ? 'Véhicules' : 'Vehicles'
 

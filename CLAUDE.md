@@ -1,138 +1,167 @@
 # Ste-Marie Sports - Project Onboard
 
-## Overview
-E-commerce website for **Ste-Marie Sports** — selling vehicles (ATV, UTV, snowmobile, motorcycle, PWC, marine) and parts/accessories. Built with **Next.js 15 + Payload CMS 3.x** as a single unified application.
+## What This Project Is
+E-commerce site for **Ste-Marie Sports** — vehicles (ATV, UTV, snowmobile, motorcycle, PWC) + parts/accessories. Built with **Next.js 15 + Payload CMS 3.x**.
 
-## Tech Stack
-- **Framework**: Next.js 15 (App Router) + Payload CMS 3.x
-- **Database**: MongoDB (local or Atlas)
-- **Language**: TypeScript
-- **Payment**: Stripe (PaymentIntent + Elements + Webhooks)
-- **Styling**: Vanilla CSS with design tokens (no Tailwind)
-- **i18n**: French (default) / English via `[locale]` URL sub-path routing
-- **Deployment**: Static gate page on cPanel (ste-marie.clients.pasuper.xyz), full app needs Node.js server
+## Current Status (2026-03-29)
+
+### What Works
+- Next.js + Payload 3.x project builds successfully (`npx next build`)
+- 16 Payload collections + 3 globals configured
+- MongoDB has 69,455 products, 540 categories, 204 brands, 13,344 YMMTs, 38,418 media, 13 provinces
+- Gate page (password: `Pasuper7803!`) with logo + snowmobile background
+- Stripe integration (PaymentIntent + webhook)
+- i18n (fr/en) via `[locale]` URL routing
+- CSS: 20K+ lines ported from old React in `public/styles.css`
+- Deployed on cPanel at `ste-marie.clients.pasuper.xyz` (Node.js on port 3002, nginx reverse proxy)
+
+### What Needs Work (PRIORITY)
+**All pages need their JSX ported from the old React app.** The old React files are in `frontend/src/` and have the complete design. The new Next.js files in `src/` are minimal stubs. The CSS is already ported — just the JSX/components need to match.
+
+#### Porting Status:
+| Component | Status | Old React File | New Next.js File |
+|-----------|--------|---------------|-----------------|
+| **HeroCarousel** | DONE | `frontend/src/components/Hero/HeroCarousel.tsx` | `src/components/HeroCarousel.tsx` |
+| **Header** | DONE | `frontend/src/layouts/Header.tsx` | `src/components/Header.tsx` |
+| **Footer** | TODO | `frontend/src/layouts/Footer.tsx` | `src/components/Footer.tsx` |
+| **ProductCard** | TODO | `frontend/src/components/ProductCard/ProductCard.tsx` | `src/components/ProductCard.tsx` |
+| **AccountSidebar** | TODO | `frontend/src/components/AccountSidebar.tsx` | `src/components/AccountSidebar.tsx` (create) |
+| **HomePage** | TODO | `frontend/src/pages/HomePage.tsx` | `src/app/(frontend)/[locale]/page.tsx` |
+| **CategoryPage** | TODO | `frontend/src/pages/CategoryPage.tsx` | `src/app/(frontend)/[locale]/category/[category]/page.tsx` |
+| **ProductPage** | TODO | `frontend/src/pages/ProductPage.tsx` | `src/app/(frontend)/[locale]/product/[slug]/page.tsx` |
+| **CartPage** | TODO | `frontend/src/pages/CartPage.tsx` | `src/app/(frontend)/[locale]/cart/page.tsx` |
+| **CheckoutPage** | TODO | `frontend/src/pages/CheckoutPage.tsx` | `src/app/(frontend)/checkout/page.tsx` |
+| **VehicleListPage** | TODO | `frontend/src/pages/VehicleListPage.tsx` | `src/app/(frontend)/[locale]/vehicules/page.tsx` |
+| **VehicleDetailPage** | TODO | `frontend/src/pages/VehicleDetailPage.tsx` | `src/app/(frontend)/[locale]/vehicule/[id]/page.tsx` |
+| **BlogListPage** | TODO | `frontend/src/pages/BlogListPage.tsx` | `src/app/(frontend)/[locale]/blog/page.tsx` |
+| **BlogDetailPage** | TODO | `frontend/src/pages/BlogDetailPage.tsx` | `src/app/(frontend)/[locale]/blog/[id]/page.tsx` |
+| **BrandsPage** | TODO | `frontend/src/pages/BrandsPage.tsx` | `src/app/(frontend)/[locale]/marques/page.tsx` |
+| **ContactUsPage** | TODO | `frontend/src/pages/ContactUsPage.tsx` | `src/app/(frontend)/[locale]/contact/page.tsx` |
+| **AboutUsPage** | TODO | `frontend/src/pages/AboutUsPage.tsx` | `src/app/(frontend)/[locale]/a-propos/page.tsx` |
+| **ServicesPage** | TODO | `frontend/src/pages/ServicesPage.tsx` | `src/app/(frontend)/[locale]/services/page.tsx` |
+| **CareersPage** | TODO | `frontend/src/pages/CareersPage.tsx` | `src/app/(frontend)/[locale]/carrieres/page.tsx` |
+| **PiecesPage** | TODO | `frontend/src/pages/PiecesPage.tsx` | `src/app/(frontend)/[locale]/pieces/page.tsx` |
+| **AccessoiresPage** | TODO | `frontend/src/pages/AccessoiresPage.tsx` | `src/app/(frontend)/[locale]/accessoires/page.tsx` |
+| **MyAccountPage** | TODO | `frontend/src/pages/MyAccountPage.tsx` | `src/app/(frontend)/[locale]/mon-compte/page.tsx` |
+| **MyOrdersPage** | TODO | `frontend/src/pages/MyOrdersPage.tsx` | `src/app/(frontend)/[locale]/mes-commandes/page.tsx` |
+| **MyWishlistPage** | TODO | `frontend/src/pages/MyWishlistPage.tsx` | `src/app/(frontend)/[locale]/ma-liste-envies/page.tsx` |
+| **MyAddressesPage** | TODO | `frontend/src/pages/MyAddressesPage.tsx` | `src/app/(frontend)/[locale]/mes-adresses/page.tsx` |
+| **OrderTrackingPage** | TODO | `frontend/src/pages/OrderTrackingPage.tsx` | `src/app/(frontend)/[locale]/suivi-commande/page.tsx` |
+| **MegaMenuLanding** | TODO | `frontend/src/pages/MegaMenuItemLandingPage.tsx` | `src/app/(frontend)/[locale]/[slug]/page.tsx` |
+| **ContentPage** | TODO | `frontend/src/pages/ContentPage.tsx` | `src/app/(frontend)/[locale]/page/[slug]/page.tsx` |
+
+## Porting Rules
+
+When porting each file:
+1. **Read the full old React file** in `frontend/src/`
+2. **Port ALL JSX** — every div, class, section, SVG icon. Do NOT simplify.
+3. **Replace imports:**
+   - `useLanguage()` → use `locale` prop/param
+   - React Router `Link` → Next.js `Link` with `/${locale}/` prefix
+   - `useParams()` → `params` from page props (Promise, use `await params`)
+   - `useSearchParams()` → `searchParams` from page props (Promise)
+   - `getMediaUrl` from `'../services/cms'` → `from '@/lib/media'`
+   - `useNavigate()` → `useRouter()` from `next/navigation`
+   - `useCart()` → `from '@/providers/CartProvider'`
+   - `useAuth()` → `from '@/providers/AuthProvider'`
+   - `useWishlist()` → `from '@/providers/WishlistProvider'`
+4. **Remove CSS imports** — already in `public/styles.css`
+5. **Server vs Client components:**
+   - Pages with data fetching only → server component with Payload Local API
+   - Pages with interactivity (forms, state) → `'use client'`
+   - Split complex pages: server component for data + client child components for interactivity
+
+### Server Component Pattern:
+```tsx
+import { getPayload, asLocale } from '@/lib/payload'
+import { getMediaUrl } from '@/lib/media'
+export const revalidate = 60
+export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params
+  const loc = asLocale(locale)
+  const payload = await getPayload()
+  // payload.find({ collection: '...', where: {...}, locale: loc })
+}
+```
+
+### Client Component Pattern:
+```tsx
+'use client'
+import { use } from 'react'
+export default function Page({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = use(params)
+}
+```
 
 ## Project Structure
 ```
 website/
-├── payload.config.ts          # Payload CMS configuration (collections, globals, localization)
-├── next.config.mjs            # Next.js config with Payload plugin
-├── middleware.ts               # i18n locale detection + site password gate
-├── tsconfig.json
-├── .env                        # MongoDB URI, Stripe keys, Payload secret
-├── public/                     # Static assets, robots.txt
-├── deploy/                     # Static HTML for cPanel deployment (gate page)
+├── payload.config.ts          # Payload CMS config
+├── next.config.mjs            # Next.js config (typescript errors ignored for build)
+├── middleware.ts               # i18n + gate password
+├── app.cjs                    # cPanel startup file (uses local next)
+├── public/
+│   ├── styles.css             # ALL CSS (20K+ lines from old React)
+│   ├── logo-stemarie.png      # Site logo (white on transparent)
+│   ├── snowmobile-header.jpeg # Background image
+│   └── robots.txt
 ├── src/
 │   ├── app/
-│   │   ├── layout.tsx          # Root layout (noindex meta)
-│   │   ├── globals.css         # All CSS (~650 lines, design tokens + components)
-│   │   ├── gate/page.tsx       # Password gate page ("En construction")
+│   │   ├── layout.tsx         # Root layout (links styles.css)
+│   │   ├── globals.css        # Minimal (just font import)
+│   │   ├── gate/page.tsx      # Password gate page
 │   │   ├── (frontend)/
 │   │   │   ├── [locale]/
-│   │   │   │   ├── layout.tsx  # Main layout (Header/Footer, server-side data from Payload)
-│   │   │   │   ├── page.tsx    # HomePage
-│   │   │   │   ├── category/[category]/  # CategoryPage with filters
-│   │   │   │   ├── product/[slug]/       # ProductPage + AddToCartButton
-│   │   │   │   ├── cart/                 # CartPage (client-side)
-│   │   │   │   ├── vehicules/            # VehicleListPage
-│   │   │   │   ├── vehicule/[id]/        # VehicleDetailPage
-│   │   │   │   ├── mon-compte/           # Account pages
-│   │   │   │   ├── blog/                 # Blog list + detail
-│   │   │   │   ├── contact/              # Contact page + form
-│   │   │   │   ├── pieces/               # Parts landing
-│   │   │   │   ├── accessoires/          # Accessories landing
-│   │   │   │   ├── [slug]/               # Dynamic CMS pages (catch-all)
-│   │   │   │   └── ... (24 pages total)
-│   │   │   └── checkout/
-│   │   │       ├── layout.tsx  # Minimal layout (no header/footer)
-│   │   │       └── page.tsx    # Stripe checkout with PaymentElement
-│   │   ├── (payload)/admin/    # Payload admin panel (auto-generated)
-│   │   └── api/
-│   │       ├── [...slug]/route.ts          # Payload REST API
-│   │       ├── create-payment-intent/route.ts  # Stripe PaymentIntent creation
-│   │       ├── stripe-webhook/route.ts     # Stripe webhook handler
-│   │       └── gate/route.ts               # Site password validation
-│   ├── payload/
-│   │   ├── collections/        # 16 collections (Products, Categories, Brands, Orders, etc.)
-│   │   └── globals/            # 3 globals (SiteIdentity, StoreInformation, CheckoutSettings)
-│   ├── components/             # Header, Footer, ProductCard, HeroCarousel
-│   ├── providers/              # AuthProvider, CartProvider, WishlistProvider (client-side)
+│   │   │   │   ├── layout.tsx # Main layout: fetches site data, renders Header+Footer
+│   │   │   │   ├── page.tsx   # HomePage
+│   │   │   │   └── ...        # All other pages
+│   │   │   └── checkout/      # Checkout (no header/footer)
+│   │   ├── (payload)/admin/   # Payload admin
+│   │   └── api/               # REST API + Stripe + gate
+│   ├── components/            # Header, Footer, ProductCard, HeroCarousel
+│   ├── providers/             # Auth, Cart, Wishlist (client-side)
 │   ├── lib/
-│   │   ├── payload.ts          # getPayload() helper for server components
-│   │   ├── media.ts            # getMediaUrl() helper
-│   │   └── i18n.ts             # Translation utility t(locale, key)
-│   └── translations/           # fr.json, en.json
+│   │   ├── payload.ts         # getPayload() + asLocale() helper
+│   │   ├── media.ts           # getMediaUrl()
+│   │   └── i18n.ts            # t(locale, key) translation
+│   ├── payload/collections/   # 16 Payload collections
+│   ├── payload/globals/       # 3 globals (SiteIdentity, StoreInformation, CheckoutSettings)
+│   └── translations/          # fr.json, en.json
+├── frontend/                  # OLD React app (reference for porting, do NOT modify)
+├── backend/                   # OLD Payload 2.x (reference, do NOT modify)
+└── dbdump/                    # MongoDB export (JSON files per collection)
 ```
 
-## Key Architectural Decisions
-
-### Server vs Client Components
-- **Server components** (default): All pages that fetch data from Payload use the Local API directly (`await payload.find(...)`) — no HTTP calls
-- **Client components** (`'use client'`): Cart, Wishlist, Auth providers, interactive elements (add-to-cart, search, forms)
-- **Site/Menu data**: Fetched server-side in `[locale]/layout.tsx` and passed as props to Header/Footer
-
-### Data Fetching
-- Uses Payload Local API in server components (no REST API overhead)
-- REST API (`/api/...`) used only by client components for mutations (login, register, form submissions)
-- ISR with `revalidate` on most pages (60s for products, 300s for vehicles, 3600s for content)
-
-### i18n
-- URL-based: `/fr/...` and `/en/...`
-- `middleware.ts` auto-redirects `/` to `/fr/`
-- Payload collections use `localized: true` fields
-- All Payload queries include `locale` parameter
-
-### No Hardcoded Content
-- ALL text labels, form fields, and configuration come from CMS
-- `CheckoutSettings` global: checkout step titles, button labels, summary labels
-- `FormSubmissions` collection: stores contact forms, vehicle inquiries
-- `StoreInformation` global: hours, address, policies, shipping rates, tax config
-- `SiteIdentity` global: logos, SEO defaults, social links, analytics IDs
-
-### Site Password Gate
-- `middleware.ts` checks `stemarie_site_access` cookie
-- Unauthenticated users → `/gate` page
-- Password: validated via `/api/gate` route, sets httpOnly cookie (30 days)
-- `/admin` and `/api` routes are excluded from the gate
+## Key Files
+- **Payload helper**: `src/lib/payload.ts` — `getPayload()` and `asLocale(locale)`
+- **Media helper**: `src/lib/media.ts` — `getMediaUrl(media)`
+- **Translation**: `src/lib/i18n.ts` — `t(locale, key)`
+- **Layout**: `src/app/(frontend)/[locale]/layout.tsx` — fetches siteIdentity, storeInfo, menus server-side
 
 ## Commands
 ```bash
-npm run dev          # Start dev server (http://localhost:3000)
-npm run build        # Production build
-npm run start        # Start production server
-npm run lint         # ESLint
-npm run generate:types  # Generate Payload TypeScript types
+# Development (requires MongoDB on localhost:27017)
+npx next dev
+
+# Build
+npx next build
+
+# Deploy to server
+tar czf /tmp/build.tar.gz .next/
+sftp clients@54.39.165.32  # upload to /home/clients/ste-marie.clients.pasuper.xyz/
+# SSH and restart: kill old process, extract, start with PORT=3002 node app.cjs
 ```
 
-## Environment Variables (.env)
-```
-MONGODB_URI=mongodb://localhost:27017/stemarie
-PAYLOAD_SECRET=<change-in-production>
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
-STRIPE_SECRET_KEY=<stripe-secret>
-STRIPE_WEBHOOK_SECRET=<stripe-webhook-secret>
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=<stripe-publishable>
-AWS_ACCESS_KEY_ID=<optional>
-AWS_SECRET_ACCESS_KEY=<optional>
-AWS_REGION=us-east-1
-AWS_BUCKET=stemarie-uploads
-```
+## Server Details
+- **Host**: 54.39.165.32
+- **User**: clients (SSH key at ~/.ssh/stemarie_deploy)
+- **App path**: /home/clients/ste-marie.clients.pasuper.xyz/
+- **Port**: 3002 (nginx reverse proxy from HTTPS)
+- **MongoDB**: localhost:27017 database `stemarie`
+- **GitHub**: https://github.com/pasuper/ste-marie-sports.git
 
-## Payload Admin
-- URL: `http://localhost:3000/admin`
-- First run: create admin user at the registration screen
-- Collections are grouped: Catalog, Inventory, Commerce, Content, Users, Settings, Media
-
-## Stripe Integration
-- **Checkout flow**: Cart → Checkout page → `POST /api/create-payment-intent` → Stripe PaymentElement → confirm payment → create order
-- **Webhooks**: `POST /api/stripe-webhook` handles `payment_intent.succeeded`, `payment_intent.payment_failed`, `charge.refunded`
-- Updates Order status and creates Transaction records automatically
-
-## Deployment
-- **Static gate page**: Deployed to cPanel via SFTP at `ste-marie.clients.pasuper.xyz`
-- **Full Next.js app**: Requires Node.js server (VPS, Vercel, Railway, etc.)
-- GitHub repo: https://github.com/pasuper/ste-marie-sports.git
-
-## Old Code (to delete)
-- `frontend/` — old React+Vite SPA (migrated to `src/app/`)
-- `backend/` — old Payload 2.x standalone (migrated to `src/payload/` + `payload.config.ts`)
+## User Preferences
+- **Never use placeholders** — all content from CMS
+- **Never ask permission** — execute directly
+- **French is default locale**
+- **Owner**: Michel Aubin (michel.aubin@pasuper.com)

@@ -1,4 +1,4 @@
-import { getPayload } from '@/lib/payload'
+import { getPayload, asLocale } from '@/lib/payload'
 import { getMediaUrl } from '@/lib/media'
 import ProductCard from '@/components/ProductCard'
 import Link from 'next/link'
@@ -8,11 +8,12 @@ export const revalidate = 300
 
 export default async function PiecesPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
+  const loc = asLocale(locale)
   const payload = await getPayload()
 
   const [categories, products] = await Promise.all([
-    payload.find({ collection: 'categories', where: { categoryType: { equals: 'parts' }, isActive: { equals: true } }, locale, limit: 50, sort: 'sortOrder' }),
-    payload.find({ collection: 'products', where: { isActive: { equals: true }, variantType: { equals: 'parent' } }, locale, limit: 8, sort: '-createdAt', depth: 1 }),
+    payload.find({ collection: 'categories', where: { categoryType: { equals: 'parts' }, isActive: { equals: true } }, locale: loc, limit: 50, sort: 'sortOrder' }),
+    payload.find({ collection: 'products', where: { isActive: { equals: true }, variantType: { equals: 'parent' } }, locale: loc, limit: 8, sort: '-createdAt', depth: 1 }),
   ])
 
   return (

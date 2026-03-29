@@ -1,4 +1,4 @@
-import { getPayload } from '@/lib/payload'
+import { getPayload, asLocale } from '@/lib/payload'
 import { getMediaUrl } from '@/lib/media'
 import ProductCard from '@/components/ProductCard'
 import AddToCartButton from './AddToCartButton'
@@ -8,14 +8,15 @@ export const revalidate = 60
 
 export default async function ProductPage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
   const { locale, slug } = await params
+  const loc = asLocale(locale)
   const payload = await getPayload()
 
-  const data = await payload.find({ collection: 'products', where: { slug: { equals: slug } }, locale, limit: 1, depth: 2 })
+  const data = await payload.find({ collection: 'products', where: { slug: { equals: slug } }, locale: loc, limit: 1, depth: 2 })
   const product = data.docs[0]
   if (!product) return <div className="container"><h1>{locale === 'fr' ? 'Produit non trouvé' : 'Product not found'}</h1></div>
 
   // Related products
-  const related = product.category ? await payload.find({ collection: 'products', where: { category: { equals: typeof product.category === 'object' ? product.category.id : product.category }, id: { not_equals: product.id }, isActive: { equals: true }, variantType: { equals: 'parent' } }, locale, limit: 4, depth: 1 }) : { docs: [] }
+  const related = product.category ? await payload.find({ collection: 'products', where: { category: { equals: typeof product.category === 'object' ? product.category.id : product.category }, id: { not_equals: product.id }, isActive: { equals: true }, variantType: { equals: 'parent' } }, locale: loc, limit: 4, depth: 1 }) : { docs: [] }
 
   const images = product.images?.map((img: any) => getMediaUrl(img.image)) || []
   if (product.thumbnail) images.unshift(getMediaUrl(product.thumbnail))

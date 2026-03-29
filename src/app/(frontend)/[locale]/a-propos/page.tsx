@@ -1,11 +1,12 @@
-import { getPayload } from '@/lib/payload'
+import { getPayload, asLocale } from '@/lib/payload'
 
 export const revalidate = 3600
 
 export default async function AboutUsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
+  const loc = asLocale(locale)
   const payload = await getPayload()
-  const page = await payload.find({ collection: 'pages', where: { slug: { equals: 'a-propos' } }, locale, limit: 1 })
+  const page = await payload.find({ collection: 'pages', where: { slug: { equals: 'a-propos' } }, locale: loc, limit: 1 })
   const content = page.docs[0]
 
   return (

@@ -1,47 +1,97 @@
-import { getPayload } from '@/lib/payload'
-import { getMediaUrl } from '@/lib/media'
-import GateForm from './GateForm'
-import Image from 'next/image'
+'use client'
 
-export default async function GatePage() {
-  let logoUrl = '/logo-stemarie.png'
-  let contactEmail = 'michel.aubin@pasuper.com'
+import { useState, useEffect, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
+/* eslint-disable @next/next/no-img-element */
 
-  try {
-    const payload = await getPayload()
-    const siteIdentity = await payload.findGlobal({ slug: 'site-identity' })
-    if (siteIdentity?.logoDark) {
-      logoUrl = getMediaUrl(siteIdentity.logoDark)
-    } else if (siteIdentity?.logo) {
-      logoUrl = getMediaUrl(siteIdentity.logo)
+const SITE_PASSWORD = 'Pasuper7803!'
+const AUTH_COOKIE = 'stemarie_site_access'
+
+function GateContent() {
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState(false)
+  const [authenticated, setAuthenticated] = useState(false)
+
+  useEffect(() => {
+    if (document.cookie.indexOf(AUTH_COOKIE + '=granted') !== -1) {
+      setAuthenticated(true)
     }
-    const storeInfo = await payload.findGlobal({ slug: 'store-information' })
-    if (storeInfo?.contact?.email) {
-      contactEmail = storeInfo.contact.email
+  }, [])
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (password === SITE_PASSWORD) {
+      document.cookie = `${AUTH_COOKIE}=granted; path=/; max-age=${60 * 60 * 24 * 30}; SameSite=Lax`
+      window.location.href = '/fr'
+    } else {
+      setError(true)
     }
-  } catch {
-    // CMS not available, use fallback values
+  }
+
+  if (authenticated) {
+    return (
+      <div className="gate-page">
+        <div className="gate-page__bg" />
+        <div className="gate-page__overlay" />
+        <div className="gate-page__card">
+          <div className="gate-page__logo">
+            <img src="/logo-stemarie.png" alt="Ste-Marie Sports" />
+          </div>
+          <h1 className="gate-page__title">En construction</h1>
+          <p className="gate-page__subtitle">
+            Notre nouveau site web arrive bientôt!<br /><br />
+            Nous travaillons fort pour vous offrir la meilleure
+            expérience en ligne pour vos véhicules, pièces et accessoires.
+          </p>
+          <div style={{ width: 60, height: 3, background: 'rgba(255,255,255,0.3)', margin: '32px auto', borderRadius: 2 }} />
+          <p className="gate-page__contact">
+            Contactez-nous: <a href="mailto:michel.aubin@pasuper.com">michel.aubin@pasuper.com</a>
+          </p>
+        </div>
+      </div>
+    )
   }
 
   return (
     <div className="gate-page">
       <div className="gate-page__bg" />
       <div className="gate-page__overlay" />
-
       <div className="gate-page__card">
         <div className="gate-page__logo">
-          <Image src={logoUrl} alt="Ste-Marie Sports" width={280} height={80} priority />
+          <img src="/logo-stemarie.png" alt="Ste-Marie Sports" />
         </div>
         <h1 className="gate-page__title">En construction</h1>
         <p className="gate-page__subtitle">
           Ce site est actuellement en développement.<br />
           Entrez le mot de passe pour accéder au site.
         </p>
-        <GateForm />
+        <form onSubmit={handleSubmit} className="gate-page__form">
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => { setPassword(e.target.value); setError(false) }}
+            placeholder="Mot de passe"
+            className={`gate-page__input ${error ? 'gate-page__input--error' : ''}`}
+            autoFocus
+            autoComplete="new-password"
+          />
+          {error && <p className="gate-page__error">Mot de passe incorrect</p>}
+          <button type="submit" className="gate-page__button" disabled={!password}>
+            Accéder au site
+          </button>
+        </form>
         <p className="gate-page__contact">
-          Contactez-nous: <a href={`mailto:${contactEmail}`}>{contactEmail}</a>
+          Contactez-nous: <a href="mailto:michel.aubin@pasuper.com">michel.aubin@pasuper.com</a>
         </p>
       </div>
     </div>
+  )
+}
+
+export default function GatePage() {
+  return (
+    <Suspense>
+      <GateContent />
+    </Suspense>
   )
 }

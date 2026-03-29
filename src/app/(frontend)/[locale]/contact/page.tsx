@@ -1,12 +1,13 @@
-import { getPayload } from '@/lib/payload'
+import { getPayload, asLocale } from '@/lib/payload'
 import ContactForm from './ContactForm'
 
 export const revalidate = 3600
 
 export default async function ContactPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
+  const loc = asLocale(locale)
   const payload = await getPayload()
-  const storeInfo = await payload.findGlobal({ slug: 'store-information', locale })
+  const storeInfo = await payload.findGlobal({ slug: 'store-information', locale: loc })
 
   return (
     <div className="container">

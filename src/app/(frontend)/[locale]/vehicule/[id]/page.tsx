@@ -1,4 +1,4 @@
-import { getPayload } from '@/lib/payload'
+import { getPayload, asLocale } from '@/lib/payload'
 import { getMediaUrl } from '@/lib/media'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -7,9 +7,10 @@ export const revalidate = 60
 
 export default async function VehicleDetailPage({ params }: { params: Promise<{ locale: string; id: string }> }) {
   const { locale, id } = await params
+  const loc = asLocale(locale)
   const payload = await getPayload()
 
-  const data = await payload.find({ collection: 'vehicles', where: { slug: { equals: id } }, locale, limit: 1, depth: 2 })
+  const data = await payload.find({ collection: 'vehicles', where: { slug: { equals: id } }, locale: loc, limit: 1, depth: 2 })
   const vehicle = data.docs[0]
   if (!vehicle) return <div className="container"><h1>{locale === 'fr' ? 'Véhicule non trouvé' : 'Vehicle not found'}</h1></div>
 
