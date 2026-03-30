@@ -1,7 +1,7 @@
+import { notFound } from 'next/navigation'
 import { getPayload, asLocale } from '@/lib/payload'
 import { getMediaUrl } from '@/lib/media'
-import Image from 'next/image'
-import Link from 'next/link'
+import VehicleDetail from '@/components/VehicleDetail'
 
 export const revalidate = 60
 
@@ -10,36 +10,64 @@ export default async function VehicleDetailPage({ params }: { params: Promise<{ 
   const loc = asLocale(locale)
   const payload = await getPayload()
 
-  const data = await payload.find({ collection: 'vehicles', where: { slug: { equals: id } }, locale: loc, limit: 1, depth: 2 })
-  const vehicle = data.docs[0]
-  if (!vehicle) return <div className="container"><h1>{locale === 'fr' ? 'Véhicule non trouvé' : 'Vehicle not found'}</h1></div>
+  const result = await payload.find({
+    collection: 'vehicles',
+    where: { slug: { equals: id } },
+    depth: 2,
+    locale: loc,
+    limit: 1,
+  })
 
-  const images = vehicle.images?.map((img: any) => getMediaUrl(img.image)) || []
-  if (vehicle.thumbnail) images.unshift(getMediaUrl(vehicle.thumbnail))
+  const vehicle = result.docs[0]
+  if (!vehicle) notFound()
 
-  return (
-    <div className="vehicle-detail-page">
-      <div className="container">
-        <div className="vehicle-detail-page__layout">
-          <div className="vehicle-detail-page__gallery">
-            {images.map((url: string, i: number) => (
-              <Image key={i} src={url} alt={`${vehicle.title} ${i + 1}`} width={800} height={600} className="vehicle-detail-page__image" priority={i === 0} />
-            ))}
-          </div>
-          <div className="vehicle-detail-page__info">
-            <span className="vehicle-detail-page__condition">{vehicle.condition === 'new' ? (locale === 'fr' ? 'Neuf' : 'New') : (locale === 'fr' ? 'Usagé' : 'Used')}</span>
-            <h1>{vehicle.title}</h1>
-            {vehicle.year && <p>{locale === 'fr' ? 'Année' : 'Year'}: {vehicle.year}</p>}
-            {vehicle.model && <p>{locale === 'fr' ? 'Modèle' : 'Model'}: {vehicle.model}</p>}
-            {vehicle.mileage !== undefined && <p>{locale === 'fr' ? 'Kilométrage' : 'Mileage'}: {vehicle.mileage.toLocaleString()} km</p>}
-            {vehicle.stockNumber && <p>Stock #: {vehicle.stockNumber}</p>}
-            {vehicle.price && <p className="vehicle-detail-page__price">${vehicle.price.toLocaleString()}</p>}
-            <Link href={`/${locale}/contact?subject=vehicle&ref=${vehicle.slug}`} className="btn btn--primary">
-              {locale === 'fr' ? "Demander plus d'infos" : 'Request Info'}
-            </Link>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
+  // Build gallery images array from thumbnail + images
+  const images: string[] = []
+  if (vehicle.thumbnail) {
+    const url = getMediaUrl(vehicle.thumbnail)
+    if (url !== '/placeholder-product.png') images.push(url)
+  }
+  if (vehicle.images && Array.isArray(vehicle.images)) {
+    for (const img of vehicle.images) {
+      const imgObj = typeof img === 'object' && img !== null && 'image' in img ? img.image : img
+      const url = getMediaUrl(imgObj)
+      if (!images.includes(url) && url !== '/placeholder-product.png') {
+        images.push(url)
+      }
+    }
+  }
+  if (images.length === 0) {
+    images.push('https://placehold.co/1200x800/1a365d/ffffff?text=Pas+d%27image')
+  }
+
+  // Serialize vehicle data for client component
+  const vehicleData = {
+    title: vehicle.title || '',
+    slug: vehicle.slug || '',
+    condition: vehicle.condition || 'used',
+    vehicleType: vehicle.vehicleType || 'other',
+    year: vehicle.year || 0,
+    brand: typeof vehicle.make === 'object' && vehicle.make ? { name: (vehicle.make as any).name || '' } : null,
+    model: vehicle.model || '',
+    trim: (vehicle as any).submodel || (vehicle as any).trim || '',
+    mileage: vehicle.mileage || 0,
+    mileageUnit: (vehicle as any).mileageUnit || 'km',
+    price: vehicle.price || 0,
+    msrp: vehicle.msrp || 0,
+    description: vehicle.description || '',
+    shortDescription: (vehicle as any).shortDescription || '',
+    stockNumber: (vehicle as any).stockNumber || '',
+    vin: vehicle.vin || '',
+    exteriorColor: (vehicle as any).exteriorColor || (vehicle as any).color || '',
+    transmission: vehicle.transmission || '',
+    fuelType: vehicle.fuelType || '',
+    driveType: vehicle.driveType || '',
+    engineSize: vehicle.engineSize || '',
+    engineType: (vehicle as any).engineType || '',
+    horsepower: (vehicle as any).horsepower || '',
+    isAvailable: vehicle.isAvailable !== false,
+    isFeatured: vehicle.isFeatured || false,
+  }
+
+  return <VehicleDetail vehicle={vehicleData} images={images} locale={locale} />
 }

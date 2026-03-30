@@ -14,41 +14,47 @@ E-commerce site for **Ste-Marie Sports** — vehicles (ATV, UTV, snowmobile, mot
 - i18n (fr/en) via `[locale]` URL routing
 - CSS: 20K+ lines ported from old React in `public/styles.css`
 - Deployed on cPanel at `ste-marie.clients.pasuper.xyz` (Node.js on port 3002, nginx reverse proxy)
+- Logo: `/logoste-marie.png` used as fallback in Header and Footer
+- YMMT API routes: `/api/ymmt/years`, `/api/ymmt/makes`, `/api/ymmt/models`, `/api/ymmt/submodels`
 
-### What Needs Work (PRIORITY)
-**All pages need their JSX ported from the old React app.** The old React files are in `frontend/src/` and have the complete design. The new Next.js files in `src/` are minimal stubs. The CSS is already ported — just the JSX/components need to match.
+### Porting Status (2026-03-29)
+All pages have been ported from the old React app with full JSX, CSS classes, and SVG icons.
 
-#### Porting Status:
-| Component | Status | Old React File | New Next.js File |
-|-----------|--------|---------------|-----------------|
-| **HeroCarousel** | DONE | `frontend/src/components/Hero/HeroCarousel.tsx` | `src/components/HeroCarousel.tsx` |
-| **Header** | DONE | `frontend/src/layouts/Header.tsx` | `src/components/Header.tsx` |
-| **Footer** | TODO | `frontend/src/layouts/Footer.tsx` | `src/components/Footer.tsx` |
-| **ProductCard** | TODO | `frontend/src/components/ProductCard/ProductCard.tsx` | `src/components/ProductCard.tsx` |
-| **AccountSidebar** | TODO | `frontend/src/components/AccountSidebar.tsx` | `src/components/AccountSidebar.tsx` (create) |
-| **HomePage** | TODO | `frontend/src/pages/HomePage.tsx` | `src/app/(frontend)/[locale]/page.tsx` |
-| **CategoryPage** | TODO | `frontend/src/pages/CategoryPage.tsx` | `src/app/(frontend)/[locale]/category/[category]/page.tsx` |
-| **ProductPage** | TODO | `frontend/src/pages/ProductPage.tsx` | `src/app/(frontend)/[locale]/product/[slug]/page.tsx` |
-| **CartPage** | TODO | `frontend/src/pages/CartPage.tsx` | `src/app/(frontend)/[locale]/cart/page.tsx` |
-| **CheckoutPage** | TODO | `frontend/src/pages/CheckoutPage.tsx` | `src/app/(frontend)/checkout/page.tsx` |
-| **VehicleListPage** | TODO | `frontend/src/pages/VehicleListPage.tsx` | `src/app/(frontend)/[locale]/vehicules/page.tsx` |
-| **VehicleDetailPage** | TODO | `frontend/src/pages/VehicleDetailPage.tsx` | `src/app/(frontend)/[locale]/vehicule/[id]/page.tsx` |
-| **BlogListPage** | TODO | `frontend/src/pages/BlogListPage.tsx` | `src/app/(frontend)/[locale]/blog/page.tsx` |
-| **BlogDetailPage** | TODO | `frontend/src/pages/BlogDetailPage.tsx` | `src/app/(frontend)/[locale]/blog/[id]/page.tsx` |
-| **BrandsPage** | TODO | `frontend/src/pages/BrandsPage.tsx` | `src/app/(frontend)/[locale]/marques/page.tsx` |
-| **ContactUsPage** | TODO | `frontend/src/pages/ContactUsPage.tsx` | `src/app/(frontend)/[locale]/contact/page.tsx` |
-| **AboutUsPage** | TODO | `frontend/src/pages/AboutUsPage.tsx` | `src/app/(frontend)/[locale]/a-propos/page.tsx` |
-| **ServicesPage** | TODO | `frontend/src/pages/ServicesPage.tsx` | `src/app/(frontend)/[locale]/services/page.tsx` |
-| **CareersPage** | TODO | `frontend/src/pages/CareersPage.tsx` | `src/app/(frontend)/[locale]/carrieres/page.tsx` |
-| **PiecesPage** | TODO | `frontend/src/pages/PiecesPage.tsx` | `src/app/(frontend)/[locale]/pieces/page.tsx` |
-| **AccessoiresPage** | TODO | `frontend/src/pages/AccessoiresPage.tsx` | `src/app/(frontend)/[locale]/accessoires/page.tsx` |
-| **MyAccountPage** | TODO | `frontend/src/pages/MyAccountPage.tsx` | `src/app/(frontend)/[locale]/mon-compte/page.tsx` |
-| **MyOrdersPage** | TODO | `frontend/src/pages/MyOrdersPage.tsx` | `src/app/(frontend)/[locale]/mes-commandes/page.tsx` |
-| **MyWishlistPage** | TODO | `frontend/src/pages/MyWishlistPage.tsx` | `src/app/(frontend)/[locale]/ma-liste-envies/page.tsx` |
-| **MyAddressesPage** | TODO | `frontend/src/pages/MyAddressesPage.tsx` | `src/app/(frontend)/[locale]/mes-adresses/page.tsx` |
-| **OrderTrackingPage** | TODO | `frontend/src/pages/OrderTrackingPage.tsx` | `src/app/(frontend)/[locale]/suivi-commande/page.tsx` |
-| **MegaMenuLanding** | TODO | `frontend/src/pages/MegaMenuItemLandingPage.tsx` | `src/app/(frontend)/[locale]/[slug]/page.tsx` |
-| **ContentPage** | TODO | `frontend/src/pages/ContentPage.tsx` | `src/app/(frontend)/[locale]/page/[slug]/page.tsx` |
+| Component | Status | New Next.js File |
+|-----------|--------|-----------------|
+| **HeroCarousel** | DONE | `src/components/HeroCarousel.tsx` |
+| **HeroTabs** | DONE | `src/components/HeroTabs.tsx` (YMMT finder, vehicle/accessory/parts tabs) |
+| **Header** | DONE | `src/components/Header.tsx` |
+| **Footer** | DONE | `src/components/Footer.tsx` (newsletter, features, social, payment cards) |
+| **ProductCard** | DONE | `src/components/ProductCard.tsx` (discount badge, wishlist, quick-add) |
+| **ProductDetail** | DONE | `src/components/ProductDetail.tsx` (gallery, tabs, specs, add-to-cart) |
+| **CategoryFilters** | DONE | `src/components/CategoryFilters.tsx` (sidebar, sort, pagination, view toggle) |
+| **AccountSidebar** | DONE | `src/components/AccountSidebar.tsx` |
+| **VehicleDetail** | DONE | `src/components/VehicleDetail.tsx` (gallery, specs, tabs) |
+| **BrandsFilter** | DONE | `src/components/BrandsFilter.tsx` (search, A-Z filter) |
+| **HomePage** | DONE | `src/app/(frontend)/[locale]/page.tsx` |
+| **CategoryPage** | DONE | `src/app/(frontend)/[locale]/category/[category]/page.tsx` |
+| **ProductPage** | DONE | `src/app/(frontend)/[locale]/product/[slug]/page.tsx` |
+| **CartPage** | DONE | `src/app/(frontend)/[locale]/cart/page.tsx` |
+| **CheckoutPage** | DONE | `src/app/(frontend)/checkout/page.tsx` |
+| **VehicleListPage** | DONE | `src/app/(frontend)/[locale]/vehicules/page.tsx` + `VehicleListClient.tsx` |
+| **VehicleDetailPage** | DONE | `src/app/(frontend)/[locale]/vehicule/[id]/page.tsx` |
+| **BlogListPage** | DONE | `src/app/(frontend)/[locale]/blog/page.tsx` |
+| **BlogDetailPage** | DONE | `src/app/(frontend)/[locale]/blog/[id]/page.tsx` |
+| **BrandsPage** | DONE | `src/app/(frontend)/[locale]/marques/page.tsx` |
+| **ContactUsPage** | DONE | `src/app/(frontend)/[locale]/contact/page.tsx` + `ContactForm.tsx` |
+| **AboutUsPage** | DONE | `src/app/(frontend)/[locale]/a-propos/page.tsx` |
+| **ServicesPage** | DONE | `src/app/(frontend)/[locale]/services/page.tsx` |
+| **CareersPage** | DONE | `src/app/(frontend)/[locale]/carrieres/page.tsx` |
+| **PiecesPage** | DONE | `src/app/(frontend)/[locale]/pieces/page.tsx` |
+| **AccessoiresPage** | DONE | `src/app/(frontend)/[locale]/accessoires/page.tsx` |
+| **MyAccountPage** | DONE | `src/app/(frontend)/[locale]/mon-compte/page.tsx` |
+| **MyOrdersPage** | DONE | `src/app/(frontend)/[locale]/mes-commandes/page.tsx` |
+| **MyWishlistPage** | DONE | `src/app/(frontend)/[locale]/ma-liste-envies/page.tsx` |
+| **MyAddressesPage** | DONE | `src/app/(frontend)/[locale]/mes-adresses/page.tsx` |
+| **OrderTrackingPage** | DONE | `src/app/(frontend)/[locale]/suivi-commande/page.tsx` |
+| **MegaMenuLanding** | DONE | `src/app/(frontend)/[locale]/[slug]/page.tsx` |
+| **ContentPage** | DONE | `src/app/(frontend)/[locale]/page/[slug]/page.tsx` |
 
 ## Porting Rules
 
@@ -146,11 +152,23 @@ npx next dev
 # Build
 npx next build
 
+# Seed menus (main nav with mega menu, topbar, footer)
+npx tsx src/seed-menus.ts
+
+# Import vehicles from CSV (822 new + 72 used from Data collection/)
+npx tsx src/import-vehicles.ts
+
 # Deploy to server
 tar czf /tmp/build.tar.gz .next/
 sftp clients@54.39.165.32  # upload to /home/clients/ste-marie.clients.pasuper.xyz/
 # SSH and restart: kill old process, extract, start with PORT=3002 node app.cjs
 ```
+
+## Media Files
+- Media images live in `backend/media/` (38K+ files)
+- `public/media` is a symlink to `backend/media/` for Next.js static serving
+- Media URLs in MongoDB are `/media/filename.jpg`
+- If symlink breaks: `ln -s $(pwd)/backend/media $(pwd)/public/media`
 
 ## Server Details
 - **Host**: 54.39.165.32

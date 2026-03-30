@@ -31,7 +31,7 @@ export default function Header({ locale, siteIdentity, storeInfo, menus }: Heade
   const topbarMenu = menus['topbar-right']
   const mainMenu = menus['main-navigation']
   const mobileMenu = menus['mobile-main']
-  const logoDarkUrl = siteIdentity?.logoDark ? getMediaUrl(siteIdentity.logoDark) : ''
+  const logoDarkUrl = siteIdentity?.logoDark ? getMediaUrl(siteIdentity.logoDark) : '/logoste-marie.png'
   const redElementUrl = siteIdentity?.redelement ? getMediaUrl(siteIdentity.redelement) : ''
   const loc = locale as 'fr' | 'en'
 
@@ -61,6 +61,15 @@ export default function Header({ locale, siteIdentity, storeInfo, menus }: Heade
     setActiveDropdown(activeDropdown === index ? null : index)
   }
 
+  const getMegaFallbackImage = (label: string): string | null => {
+    const l = label.toLowerCase()
+    if (l.includes('motoneige') || l.includes('snowmobile')) return '/mega-motoneige.jpg'
+    if (l.includes('vtt') || l.includes('côte') || l.includes('atv') || l.includes('side')) return '/mega-vtt.jpg'
+    if (l.includes('moto') || l.includes('motorcycle')) return '/mega-moto.jpg'
+    if (l.includes('marine') || l.includes('nautique') || l.includes('watercraft')) return '/mega-marine.jpg'
+    return null
+  }
+
   const getItemUrl = (item: any): string => {
     if (item.url) return item.url.startsWith('/') ? `/${locale}${item.url}` : item.url
     if (item.page?.slug) return `/${locale}/${item.page.slug}`
@@ -87,7 +96,7 @@ export default function Header({ locale, siteIdentity, storeInfo, menus }: Heade
   const renderClassicItem = (item: any, index: number) => {
     const isActive = activeDropdown === index
     const itemUrl = getItemUrl(item)
-    const hasMega = item.hasMegaMenu !== false
+    const hasMega = item.hasMegaMenu === true
 
     if (!hasMega) {
       return (
@@ -111,11 +120,14 @@ export default function Header({ locale, siteIdentity, storeInfo, menus }: Heade
           <div className="ps-header__mega-container">
             <div className="ps-header__mega-col">
               <h4 className="ps-header__mega-title">{locale === 'fr' ? 'Véhicules' : 'Vehicles'}</h4>
-              {item.vehicleImage && (
-                <div className="ps-header__mega-vehicle-box">
-                  <img src={getMediaUrl(item.vehicleImage)} alt={item.label} />
-                </div>
-              )}
+              {(() => {
+                const megaImage = item.vehicleImage ? getMediaUrl(item.vehicleImage) : getMegaFallbackImage(item.label)
+                return megaImage ? (
+                  <div className="ps-header__mega-vehicle-box">
+                    <img src={megaImage} alt={item.label} />
+                  </div>
+                ) : null
+              })()}
               <div className="ps-header__mega-links">
                 {item.vehicleLinks && item.vehicleLinks.length > 0 ? (
                   item.vehicleLinks.map(renderMegaLink)
@@ -149,11 +161,14 @@ export default function Header({ locale, siteIdentity, storeInfo, menus }: Heade
           </div>
           {item.showBrands && item.brands && item.brands.length > 0 && (
             <div className="ps-header__mega-brands">
-              {item.brands.map((brand: any) => (
-                <Link key={brand.id} href={`/${locale}/marques`} className="ps-header__mega-brand">
-                  {brand.logo ? <img src={getMediaUrl(brand.logo)} alt={brand.name} /> : <span>{brand.name}</span>}
-                </Link>
-              ))}
+              {item.brands.map((brand: any) => {
+                const brandName = typeof brand.name === 'string' ? brand.name : brand.name?.fr || ''
+                return (
+                  <Link key={brand.id} href={`/${locale}/marques?brand=${brand.slug}`} className="ps-header__mega-brand">
+                    {brand.logo ? <img src={getMediaUrl(brand.logo)} alt={brandName} /> : <span>{brandName}</span>}
+                  </Link>
+                )
+              })}
               <Link href={`/${locale}/marques`} className="ps-header__mega-brands-link">{locale === 'fr' ? 'Voir toutes les marques →' : 'See all brands →'}</Link>
             </div>
           )}

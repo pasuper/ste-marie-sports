@@ -1,25 +1,60 @@
+import { notFound } from 'next/navigation'
 import { getPayload, asLocale } from '@/lib/payload'
 import { getMediaUrl } from '@/lib/media'
-import ProductCard from '@/components/ProductCard'
-import AddToCartButton from './AddToCartButton'
-import Image from 'next/image'
+import ProductDetail from '@/components/ProductDetail'
 
 export const revalidate = 60
 
-export default async function ProductPage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
+export default async function ProductPage({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>
+}) {
   const { locale, slug } = await params
   const loc = asLocale(locale)
   const payload = await getPayload()
 
-  const data = await payload.find({ collection: 'products', where: { slug: { equals: slug } }, locale: loc, limit: 1, depth: 2 })
+  const data = await payload.find({
+    collection: 'products',
+    where: { slug: { equals: slug } },
+    locale: loc,
+    limit: 1,
+    depth: 2,
+  })
   const product = data.docs[0]
-  if (!product) return <div className="container"><h1>{locale === 'fr' ? 'Produit non trouvé' : 'Product not found'}</h1></div>
+  if (!product) return notFound()
 
-  // Related products
-  const related = product.category ? await payload.find({ collection: 'products', where: { category: { equals: typeof product.category === 'object' ? product.category.id : product.category }, id: { not_equals: product.id }, isActive: { equals: true }, variantType: { equals: 'parent' } }, locale: loc, limit: 4, depth: 1 }) : { docs: [] }
+  // Fetch related products from same category
+  const categoryId =
+    typeof product.category === 'object' ? product.category?.id : product.category
+  const related = categoryId
+    ? await payload.find({
+        collection: 'products',
+        where: {
+          category: { equals: categoryId },
+          id: { not_equals: product.id },
+          isActive: { equals: true },
+          variantType: { equals: 'parent' },
+        },
+        locale: loc,
+        limit: 4,
+        depth: 1,
+      })
+    : { docs: [] }
 
-  const images = product.images?.map((img: any) => getMediaUrl(img.image)) || []
-  if (product.thumbnail) images.unshift(getMediaUrl(product.thumbnail))
+  // Build gallery images array
+  const galleryImages: string[] = []
+  if (product.thumbnail) {
+    galleryImages.push(getMediaUrl(product.thumbnail))
+  }
+  if (product.images) {
+    for (const img of product.images) {
+      galleryImages.push(getMediaUrl((img as any).image))
+    }
+  }
+  if (galleryImages.length === 0) {
+    galleryImages.push('https://placehold.co/800x800/f3f4f6/9ca3af?text=No+Image')
+  }
 
   // Collect attributes
   const attributes: { name: string; value: string }[] = []
@@ -29,65 +64,42 @@ export default async function ProductPage({ params }: { params: Promise<{ locale
     if (name && value) attributes.push({ name, value })
   }
 
+  // Convert description to HTML string
+  let descriptionHtml = ''
+  if (typeof product.description === 'string') {
+    descriptionHtml = product.description
+  } else if (product.description && typeof product.description === 'object') {
+    // Lexical rich text - try dynamic import for HTML conversion
+    try {
+      const lexical = await import('@payloadcms/richtext-lexical')
+      if (lexical.convertLexicalToHTML && lexical.consolidateHTMLConverters && lexical.defaultEditorConfig && lexical.defaultEditorFeatures) {
+        const editorConfig = lexical.defaultEditorConfig
+        editorConfig.features = [...lexical.defaultEditorFeatures]
+        const converters = lexical.consolidateHTMLConverters({ editorConfig })
+        descriptionHtml = await lexical.convertLexicalToHTML({ converters, data: product.description })
+      }
+    } catch {
+      // Fallback: serialize Lexical root text content
+      try {
+        const root = product.description?.root
+        if (root?.children) {
+          descriptionHtml = root.children.map((node: any) => {
+            if (node.children) return `<p>${node.children.map((c: any) => c.text || '').join('')}</p>`
+            return ''
+          }).join('')
+        }
+      } catch { /* ignore */ }
+    }
+  }
+
   return (
-    <div className="product-page">
-      <div className="container">
-        <div className="product-page__layout">
-          <div className="product-page__gallery">
-            {images.length > 0 ? (
-              images.map((url: string, i: number) => (
-                <Image key={i} src={url} alt={`${product.name} ${i + 1}`} width={600} height={600} className="product-page__image" priority={i === 0} />
-              ))
-            ) : (
-              <Image src="/placeholder-product.png" alt={product.name} width={600} height={600} className="product-page__image" />
-            )}
-          </div>
-          <div className="product-page__info">
-            {typeof product.brand === 'object' && product.brand?.name && (
-              <span className="product-page__brand">{product.brand.name}</span>
-            )}
-            <h1 className="product-page__title">{product.name}</h1>
-            {product.sku && <p className="product-page__sku">SKU: {product.sku}</p>}
-            <div className="product-page__pricing">
-              {product.compareAtPrice && product.compareAtPrice > product.price && (
-                <span className="product-page__compare-price">${product.compareAtPrice.toFixed(2)}</span>
-              )}
-              <span className="product-page__price">${product.price.toFixed(2)}</span>
-            </div>
-            {product.shortDescription && <p className="product-page__description">{product.shortDescription}</p>}
-
-            <AddToCartButton product={product} locale={locale} />
-
-            {product.stock !== undefined && (
-              <p className={`product-page__stock ${product.stock > 0 ? 'product-page__stock--in' : 'product-page__stock--out'}`}>
-                {product.stock > 0 ? (locale === 'fr' ? 'En stock' : 'In Stock') : (locale === 'fr' ? 'Rupture de stock' : 'Out of Stock')}
-              </p>
-            )}
-
-            {attributes.length > 0 && (
-              <div className="product-page__attributes">
-                <h3>{locale === 'fr' ? 'Caractéristiques' : 'Specifications'}</h3>
-                <table className="attributes-table">
-                  <tbody>
-                    {attributes.map((attr, i) => (
-                      <tr key={i}><td>{attr.name}</td><td>{attr.value}</td></tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {related.docs.length > 0 && (
-          <section className="section">
-            <h2 className="section__title">{locale === 'fr' ? 'Produits similaires' : 'Related Products'}</h2>
-            <div className="grid grid--4">
-              {related.docs.map((p: any) => <ProductCard key={p.id} product={p} locale={locale} />)}
-            </div>
-          </section>
-        )}
-      </div>
-    </div>
+    <ProductDetail
+      product={JSON.parse(JSON.stringify(product))}
+      relatedProducts={JSON.parse(JSON.stringify(related.docs))}
+      locale={locale}
+      galleryImages={galleryImages}
+      attributes={attributes}
+      descriptionHtml={descriptionHtml}
+    />
   )
 }

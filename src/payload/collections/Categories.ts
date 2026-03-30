@@ -25,7 +25,7 @@ export const Categories: CollectionConfig = {
         { label: 'Blog', value: 'blog' },
       ],
     },
-    { name: 'parent', type: 'relationship', relationTo: 'categories' },
+    { name: 'parent', type: 'relationship', relationTo: 'categories', index: true },
     {
       name: 'vehicleTypes',
       type: 'select',
@@ -39,9 +39,9 @@ export const Categories: CollectionConfig = {
         { label: 'Marine', value: 'marine' },
       ],
     },
-    { name: 'isActive', type: 'checkbox', defaultValue: true },
-    { name: 'isFeatured', type: 'checkbox', defaultValue: false },
-    { name: 'sortOrder', type: 'number', defaultValue: 0 },
+    { name: 'isActive', type: 'checkbox', defaultValue: true, index: true },
+    { name: 'isFeatured', type: 'checkbox', defaultValue: false, index: true },
+    { name: 'sortOrder', type: 'number', defaultValue: 0, index: true },
   ],
   access: { read: () => true },
 }

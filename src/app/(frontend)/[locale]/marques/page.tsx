@@ -1,6 +1,6 @@
 import { getPayload, asLocale } from '@/lib/payload'
 import { getMediaUrl } from '@/lib/media'
-import Image from 'next/image'
+import BrandsFilter from '@/components/BrandsFilter'
 
 export const revalidate = 3600
 
@@ -8,19 +8,22 @@ export default async function BrandsPage({ params }: { params: Promise<{ locale:
   const { locale } = await params
   const loc = asLocale(locale)
   const payload = await getPayload()
-  const brands = await payload.find({ collection: 'brands', where: { isActive: { equals: true } }, locale: loc, limit: 200, sort: 'sortOrder' })
 
-  return (
-    <div className="container">
-      <h1 className="page-title">{locale === 'fr' ? 'Nos marques' : 'Our Brands'}</h1>
-      <div className="brands-grid brands-grid--large">
-        {brands.docs.map((brand: any) => (
-          <div key={brand.id} className="brand-card">
-            {brand.logo ? <Image src={getMediaUrl(brand.logo)} alt={brand.name} width={200} height={100} /> : <span>{brand.name}</span>}
-            <h3>{brand.name}</h3>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
+  const result = await payload.find({
+    collection: 'brands',
+    where: { isActive: { equals: true } },
+    locale: loc,
+    limit: 500,
+    sort: 'name',
+  })
+
+  const brands = result.docs.map((brand: any) => ({
+    id: brand.id,
+    name: brand.name || '',
+    slug: brand.slug || '',
+    logo: brand.logo ? getMediaUrl(brand.logo) : `https://placehold.co/200x100/1a1a1a/ffffff?text=${encodeURIComponent(brand.name || '')}`,
+    isFeatured: brand.isFeatured || false,
+  }))
+
+  return <BrandsFilter brands={brands} locale={locale} />
 }

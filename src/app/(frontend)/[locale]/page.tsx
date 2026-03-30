@@ -1,9 +1,10 @@
 import { getPayload, asLocale } from '@/lib/payload'
 import { getMediaUrl } from '@/lib/media'
+import { t } from '@/lib/i18n'
 import HeroCarousel from '@/components/HeroCarousel'
+import HeroTabs from '@/components/HeroTabs'
 import ProductCard from '@/components/ProductCard'
 import Link from 'next/link'
-import Image from 'next/image'
 
 export const revalidate = 60
 
@@ -12,46 +13,111 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const loc = asLocale(locale)
   const payload = await getPayload()
 
-  // Hero sections
-  const heroData = await payload.find({ collection: 'hero-sections', where: { isActive: { equals: true } }, locale: loc, limit: 1, depth: 1 })
+  // Parallel fetch for speed
+  const [heroData, brandsData, categoriesData, productsData] = await Promise.all([
+    payload.find({ collection: 'hero-sections', where: { isActive: { equals: true } }, locale: loc, limit: 1, depth: 1 }),
+    payload.find({ collection: 'brands', where: { isFeatured: { equals: true }, isActive: { equals: true } }, locale: loc, limit: 12, sort: 'sortOrder', depth: 1 }),
+    payload.find({ collection: 'categories', where: { isFeatured: { equals: true }, isActive: { equals: true } }, locale: loc, limit: 6, sort: 'sortOrder', depth: 1 }),
+    payload.find({ collection: 'products', where: { isFeatured: { equals: true }, isActive: { equals: true }, variantType: { equals: 'parent' } }, locale: loc, limit: 8, depth: 1 }),
+  ])
 
-  // Brands - try featured first, fallback to all active
-  let brands = await payload.find({ collection: 'brands', where: { isFeatured: { equals: true } }, locale: loc, limit: 12, sort: 'sortOrder' })
+  // Fallbacks only if needed (sequential is fine for fallbacks — they rarely trigger)
+  let brands = brandsData
   if (brands.docs.length === 0) {
-    brands = await payload.find({ collection: 'brands', where: { isActive: { equals: true } }, locale: loc, limit: 12, sort: 'sortOrder' })
+    brands = await payload.find({ collection: 'brands', where: { isActive: { equals: true } }, locale: loc, limit: 12, sort: 'sortOrder', depth: 0 })
   }
 
-  // Categories - try featured first, fallback to root categories
-  let categories = await payload.find({ collection: 'categories', where: { isFeatured: { equals: true } }, locale: loc, limit: 8, sort: 'sortOrder' })
+  let categories = categoriesData
   if (categories.docs.length === 0) {
-    categories = await payload.find({ collection: 'categories', where: { isActive: { equals: true } }, locale: loc, limit: 8, sort: 'sortOrder' })
+    categories = await payload.find({ collection: 'categories', where: { isActive: { equals: true } }, locale: loc, limit: 6, sort: 'sortOrder', depth: 0 })
   }
 
-  // Products - try featured, fallback to recent with thumbnails
-  let products = await payload.find({ collection: 'products', where: { isFeatured: { equals: true }, isActive: { equals: true }, variantType: { equals: 'parent' } }, locale: loc, limit: 8, depth: 1 })
+  let products = productsData
   if (products.docs.length === 0) {
     products = await payload.find({ collection: 'products', where: { isActive: { equals: true }, variantType: { equals: 'parent' }, thumbnail: { exists: true } }, locale: loc, limit: 8, sort: '-createdAt', depth: 1 })
-  }
-  if (products.docs.length === 0) {
-    products = await payload.find({ collection: 'products', where: { isActive: { equals: true } }, locale: loc, limit: 8, sort: '-createdAt', depth: 1 })
   }
 
   const hero = heroData.docs[0]
 
   return (
     <div className="home-page">
-      {hero?.slides && <HeroCarousel slides={hero.slides} autoPlay={hero.autoPlay} autoPlayDelay={hero.autoPlayDelay} locale={locale} />}
+      {/* Hero Section */}
+      <section className="hero">
+        {hero?.slides ? (
+          <HeroCarousel heroSection={hero} locale={locale} />
+        ) : (
+          <div className="hero__slider">
+            <div className="hero__slide hero__slide--active">
+              <div className="hero__bg">
+                <img src="/snowmobile-header.jpeg" alt="Ste-Marie Sports" />
+              </div>
+              <div className="hero__flair"></div>
+              <div className="hero__content">
+                <h1 className="hero__title">
+                  {locale === 'fr' ? (
+                    <>VIS<br/><span className="hero__title-accent">L&apos;AVENTURE</span></>
+                  ) : (
+                    <>LIVE THE<br/><span className="hero__title-accent">ADVENTURE</span></>
+                  )}
+                </h1>
+                <p className="hero__subtitle">
+                  {locale === 'fr'
+                    ? 'Équipement premium pour passionnés exigeants.'
+                    : 'Premium gear for demanding enthusiasts.'}
+                </p>
+                <div className="hero__buttons">
+                  <Link href={`/${locale}/vehicules`} className="btn btn--fire btn--lg">
+                    <span>{locale === 'fr' ? 'EXPLORER' : 'EXPLORE'}</span>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                      <path d="M5 12h14m-7-7l7 7-7 7"/>
+                    </svg>
+                  </Link>
+                  <Link href={`/${locale}/accessoires`} className="btn btn--outline-bold btn--lg">
+                    {locale === 'fr' ? 'ACCESSOIRES' : 'ACCESSORIES'}
+                  </Link>
+                </div>
+                <div className="hero__stats">
+                  <div className="hero__stat">
+                    <span className="hero__stat-number">50K+</span>
+                    <span className="hero__stat-text">{locale === 'fr' ? 'PRODUITS' : 'PRODUCTS'}</span>
+                  </div>
+                  <div className="hero__stat">
+                    <span className="hero__stat-number">4.9★</span>
+                    <span className="hero__stat-text">{locale === 'fr' ? 'ÉVALUATION' : 'RATING'}</span>
+                  </div>
+                  <div className="hero__stat">
+                    <span className="hero__stat-number">24H</span>
+                    <span className="hero__stat-text">{locale === 'fr' ? 'LIVRAISON' : 'SHIPPING'}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <HeroTabs locale={locale} />
+      </section>
 
       {/* Categories */}
       {categories.docs.length > 0 && (
-        <section className="section">
+        <section className="categories">
           <div className="container">
-            <h2 className="section__title">{locale === 'fr' ? 'Catégories' : 'Categories'}</h2>
-            <div className="grid grid--3">
+            <div className="section-header">
+              <h2>{t(loc, 'categories.title')}</h2>
+              <Link href={`/${locale}/category/all`} className="section-link">{t(loc, 'categories.viewAll')} →</Link>
+            </div>
+            <div className="categories__grid">
               {categories.docs.map((cat: any) => (
                 <Link key={cat.id} href={`/${locale}/category/${cat.slug}`} className="category-card">
-                  {cat.image && <Image src={getMediaUrl(cat.image)} alt={cat.name} width={400} height={300} className="category-card__image" />}
-                  <h3 className="category-card__name">{cat.name}</h3>
+                  <div className="category-card__image">
+                    {cat.image && (
+                      <img src={getMediaUrl(cat.image)} alt={cat.name} loading="lazy" />
+                    )}
+                  </div>
+                  <div className="category-card__content">
+                    <h3>{cat.name}</h3>
+                    {cat.description && <span>{cat.description}</span>}
+                  </div>
                 </Link>
               ))}
             </div>
@@ -59,12 +125,15 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </section>
       )}
 
-      {/* Products */}
+      {/* Featured Products */}
       {products.docs.length > 0 && (
-        <section className="section">
+        <section className="featured-products">
           <div className="container">
-            <h2 className="section__title">{locale === 'fr' ? 'Produits vedettes' : 'Featured Products'}</h2>
-            <div className="grid grid--4">
+            <div className="section-header">
+              <h2>{t(loc, 'featuredProducts.title')}</h2>
+              <Link href={`/${locale}/category/all`} className="section-link">{t(loc, 'featuredProducts.viewAll')} →</Link>
+            </div>
+            <div className="products-grid">
               {products.docs.map((product: any) => (
                 <ProductCard key={product.id} product={product} locale={locale} />
               ))}
@@ -73,18 +142,35 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </section>
       )}
 
+      {/* Sale Banner */}
+      <section className="sale-banner">
+        <div className="container">
+          <div className="sale-banner__content">
+            <div className="sale-banner__text">
+              <span className="sale-banner__tag">{t(loc, 'saleBanner.tag')}</span>
+              <h2>{t(loc, 'saleBanner.title')}</h2>
+              <p>{t(loc, 'saleBanner.description')}</p>
+              <Link href={`/${locale}/category/all`} className="btn btn--primary btn--lg">{t(loc, 'saleBanner.cta')}</Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Brands */}
       {brands.docs.length > 0 && (
-        <section className="section section--gray">
+        <section className="brands">
           <div className="container">
-            <h2 className="section__title">{locale === 'fr' ? 'Nos marques' : 'Our Brands'}</h2>
-            <div className="brands-grid">
+            <div className="section-header">
+              <h2>{t(loc, 'brands.title')}</h2>
+              <Link href={`/${locale}/marques`} className="section-link">{t(loc, 'brands.viewAll')} →</Link>
+            </div>
+            <div className="brands__grid">
               {brands.docs.map((brand: any) => (
-                <Link key={brand.id} href={`/${locale}/marques`} className="brand-logo">
+                <Link key={brand.id} href={`/${locale}/marques`} className="brand-card">
                   {brand.logo ? (
-                    <Image src={getMediaUrl(brand.logo)} alt={brand.name} width={150} height={80} className="brand-logo__image" />
+                    <img src={getMediaUrl(brand.logo)} alt={brand.name} loading="lazy" />
                   ) : (
-                    <span className="brand-logo__name">{brand.name}</span>
+                    <span>{brand.name}</span>
                   )}
                 </Link>
               ))}
@@ -92,6 +178,37 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </div>
         </section>
       )}
+
+      {/* Blog Section */}
+      <section className="blog-section">
+        <div className="container">
+          <div className="section-header">
+            <h2>{t(loc, 'blog.title')}</h2>
+            <Link href={`/${locale}/blog`} className="section-link">{t(loc, 'blog.viewAll')} →</Link>
+          </div>
+          <div className="blog-grid">
+            <article className="blog-card blog-card--large">
+              <div className="blog-card__content">
+                <span className="blog-card__category">{t(loc, 'blog.buyingGuide')}</span>
+                <h3>{locale === 'fr' ? 'Comment choisir son véhicule récréatif' : 'How to choose your recreational vehicle'}</h3>
+                <p>{locale === 'fr' ? 'Tout ce que vous devez savoir pour trouver le véhicule parfait selon vos besoins.' : 'Everything you need to know to find the perfect vehicle for your needs.'}</p>
+              </div>
+            </article>
+            <article className="blog-card">
+              <div className="blog-card__content">
+                <span className="blog-card__category">{t(loc, 'blog.tips')}</span>
+                <h3>{locale === 'fr' ? 'Entretenir son véhicule en hiver' : 'Winter vehicle maintenance'}</h3>
+              </div>
+            </article>
+            <article className="blog-card">
+              <div className="blog-card__content">
+                <span className="blog-card__category">{t(loc, 'blog.top10')}</span>
+                <h3>{locale === 'fr' ? 'Les meilleurs accessoires 2025' : 'Best accessories 2025'}</h3>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
     </div>
   )
 }

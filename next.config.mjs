@@ -11,6 +11,15 @@ const nextConfig = {
       { protocol: 'https', hostname: '*.amazonaws.com' },
     ],
   },
+  // Speed up dev mode
+  experimental: {
+    // Turbopack is the fast Rust-based bundler (replaces webpack in dev)
+    turbo: {},
+  },
+  // Don't lint during dev builds
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 }
 
 export default withPayload(nextConfig)
