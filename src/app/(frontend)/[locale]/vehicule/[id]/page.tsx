@@ -41,30 +41,33 @@ export default async function VehicleDetailPage({ params }: { params: Promise<{ 
   }
 
   // Serialize vehicle data for client component
+  const specs = (vehicle as any).specifications || {}
+  const brandObj = typeof vehicle.brand === 'object' && vehicle.brand ? vehicle.brand as any : null
+  const brandName = brandObj ? (typeof brandObj.name === 'string' ? brandObj.name : brandObj.name?.fr || brandObj.name?.en || '') : ''
   const vehicleData = {
-    title: vehicle.title || '',
+    title: typeof vehicle.title === 'string' ? vehicle.title : (vehicle.title as any)?.fr || (vehicle.title as any)?.en || '',
     slug: vehicle.slug || '',
     condition: vehicle.condition || 'used',
     vehicleType: vehicle.vehicleType || 'other',
     year: vehicle.year || 0,
-    brand: typeof vehicle.make === 'object' && vehicle.make ? { name: (vehicle.make as any).name || '' } : null,
+    brand: brandObj ? { name: brandName } : null,
     model: vehicle.model || '',
     trim: (vehicle as any).submodel || (vehicle as any).trim || '',
-    mileage: vehicle.mileage || 0,
-    mileageUnit: (vehicle as any).mileageUnit || 'km',
+    mileage: specs.mileage || 0,
+    mileageUnit: specs.mileageUnit || 'km',
     price: vehicle.price || 0,
     msrp: vehicle.msrp || 0,
     description: vehicle.description || '',
     shortDescription: (vehicle as any).shortDescription || '',
     stockNumber: (vehicle as any).stockNumber || '',
-    vin: vehicle.vin || '',
-    exteriorColor: (vehicle as any).exteriorColor || (vehicle as any).color || '',
-    transmission: vehicle.transmission || '',
-    fuelType: vehicle.fuelType || '',
-    driveType: vehicle.driveType || '',
-    engineSize: vehicle.engineSize || '',
-    engineType: (vehicle as any).engineType || '',
-    horsepower: (vehicle as any).horsepower || '',
+    vin: specs.vin || '',
+    exteriorColor: specs.exteriorColor || '',
+    transmission: specs.transmission || '',
+    fuelType: specs.fuelType || '',
+    driveType: specs.driveType || '',
+    engineSize: specs.engineSize || '',
+    engineType: specs.engineType || '',
+    horsepower: specs.horsepower ? String(specs.horsepower) : '',
     isAvailable: vehicle.isAvailable !== false,
     isFeatured: vehicle.isFeatured || false,
   }

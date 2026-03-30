@@ -185,6 +185,7 @@ async function main() {
       const prix = parsePrice(row.prix)
       const stockNumber = row.numero_stock?.replace(/\.0$/, '') || ''
       const description = row.description || ''
+      const sourceUrl = row.url || ''
 
       // Skip invalid rows
       if (!titre || !annee || annee < 1900) {
@@ -222,6 +223,7 @@ async function main() {
             model: modele,
             price: prix || undefined,
             shortDescription: description,
+            sourceUrl: sourceUrl || undefined,
             isAvailable: true,
             isFeatured: false,
           } as any,

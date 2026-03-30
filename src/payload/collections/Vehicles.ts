@@ -110,6 +110,7 @@ export const Vehicles: CollectionConfig = {
 
     // Description
     { name: 'shortDescription', type: 'textarea', localized: true },
+    { name: 'sourceUrl', type: 'text', admin: { description: 'Original dealer website URL' } },
     { name: 'description', type: 'richText', localized: true },
     {
       name: 'features',

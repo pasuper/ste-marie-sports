@@ -5,20 +5,24 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   images: {
     remotePatterns: [
       { protocol: 'http', hostname: 'localhost' },
       { protocol: 'https', hostname: '*.amazonaws.com' },
     ],
   },
-  // Speed up dev mode
+  // Turbopack is now stable in Next.js 15 — config goes here
+  turbopack: {},
+  // Optimize heavy package imports (tree-shake unused exports)
   experimental: {
-    // Turbopack is the fast Rust-based bundler (replaces webpack in dev)
-    turbo: {},
-  },
-  // Don't lint during dev builds
-  eslint: {
-    ignoreDuringBuilds: true,
+    optimizePackageImports: [
+      '@payloadcms/ui',
+      '@payloadcms/richtext-lexical',
+      'lucide-react',
+    ],
   },
 }
 
