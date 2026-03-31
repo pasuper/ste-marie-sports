@@ -315,7 +315,7 @@ export default function VehicleListClient({
                   {vehicles.map((vehicle) => (
                     <Link key={vehicle.id} href={`/${locale}/vehicule/${vehicle.slug}`} className="vehicle-card">
                       <div className="vehicle-card__image">
-                        <img src={vehicle.thumbnail?.url || '/placeholder-product.png'} alt={vehicle.title} loading="lazy" />
+                        <img src={vehicle.thumbnail?.url || 'https://placehold.co/600x400/1a365d/ffffff?text=Pas+d%27image'} alt={vehicle.title} loading="lazy" />
                         <span className={`vehicle-card__condition vehicle-card__condition--${vehicle.condition}`}>
                           {getConditionLabel(vehicle.condition)}
                         </span>
@@ -423,6 +423,16 @@ export default function VehicleListClient({
                               {locale === 'fr' ? 'Voir les détails' : 'View details'}
                               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                             </span>
+                          </div>
+                        )}
+
+                        {viewMode !== 'list' && (
+                          <div className="vehicle-card__price">
+                            {vehicle.price ? (
+                              <span className="vehicle-card__price-current">{vehicle.price.toLocaleString()} $</span>
+                            ) : (
+                              <span className="vehicle-card__price-current">{locale === 'fr' ? 'Contactez-nous' : 'Contact us'}</span>
+                            )}
                           </div>
                         )}
                       </div>

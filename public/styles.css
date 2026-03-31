@@ -8855,6 +8855,10 @@ body {
   grid-template-columns: repeat(3, 1fr);
 }
 
+.vehicles-grid--grid .vehicle-card__price-section {
+  display: none;
+}
+
 .vehicles-grid--list {
   grid-template-columns: 1fr;
 }
