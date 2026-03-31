@@ -153,13 +153,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             <div className="brands__grid">
               {brands.docs.map((brand: any) => (
                 <Link key={brand.id} href={`/${locale}/marques?brand=${brand.slug}`} className="brand-card">
-                  {brand.logo ? (
-                    <img src={getMediaUrl(brand.logo)} alt={brand.name} loading="lazy" />
-                  ) : (
-                    <img src={`/media/brand-${brand.slug}.png`} alt={brand.name} loading="lazy"
-                      onError={(e: any) => { e.target.style.display='none'; e.target.nextSibling.style.display='block' }} />
-                  )}
-                  <span style={{display:'none'}}>{brand.name}</span>
+                  <img
+                    src={brand.logo ? getMediaUrl(brand.logo) : `/media/brand-${brand.slug}.svg`}
+                    alt={brand.name}
+                    loading="lazy"
+                    onError={(e: any) => { e.target.src = `/media/brand-${brand.slug}.png`; e.target.onerror = null }}
+                  />
                 </Link>
               ))}
             </div>

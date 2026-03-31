@@ -165,12 +165,11 @@ export default function Header({ locale, siteIdentity, storeInfo, menus }: Heade
                 const brandName = typeof brand.name === 'string' ? brand.name : brand.name?.fr || ''
                 return (
                   <Link key={brand.id} href={`/${locale}/marques?brand=${brand.slug}`} className="ps-header__mega-brand">
-                    {brand.logo
-                      ? <img src={getMediaUrl(brand.logo)} alt={brandName} />
-                      : <img src={`/media/brand-${brand.slug}.png`} alt={brandName}
-                          onError={(e: any) => { e.target.style.display='none'; e.target.nextSibling.style.display='inline' }} />
-                    }
-                    <span style={{display: brand.logo ? 'none' : 'none'}}>{brandName}</span>
+                    <img
+                      src={brand.logo ? getMediaUrl(brand.logo) : `/media/brand-${brand.slug}.svg`}
+                      alt={brandName}
+                      onError={(e: any) => { e.target.src = `/media/brand-${brand.slug}.png`; e.target.onerror = null }}
+                    />
                   </Link>
                 )
               })}

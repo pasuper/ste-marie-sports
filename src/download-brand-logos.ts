@@ -112,30 +112,58 @@ const BRAND_DOMAINS: Record<string, string> = {
   'niche': 'nichewheels.com',
 }
 
-function downloadFile(url: string, dest: string): Promise<boolean> {
+function downloadFile(url: string, dest: string, redirects = 0): Promise<boolean> {
+  if (redirects > 5) return Promise.resolve(false)
   return new Promise((resolve) => {
     const client = url.startsWith('https') ? https : http
     const req = client.get(url, {
       headers: {
-        'User-Agent': 'Mozilla/5.0',
-        'Accept': 'image/*',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Accept': 'image/png,image/jpeg,image/webp,image/*',
       }
     }, (res) => {
       if (res.statusCode && res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
-        return downloadFile(res.headers.location, dest).then(resolve)
+        const loc = res.headers.location.startsWith('http') ? res.headers.location : new URL(res.headers.location, url).href
+        return downloadFile(loc, dest, redirects + 1).then(resolve)
       }
-      if (!res.statusCode || res.statusCode !== 200) { resolve(false); return }
+      if (!res.statusCode || res.statusCode !== 200) { res.resume(); resolve(false); return }
       const contentType = res.headers['content-type'] || ''
-      if (!contentType.includes('image')) { resolve(false); return }
+      if (!contentType.includes('image') && !contentType.includes('octet')) { res.resume(); resolve(false); return }
 
       const file = fs.createWriteStream(dest)
       res.pipe(file)
       file.on('finish', () => { file.close(); resolve(true) })
-      file.on('error', () => resolve(false))
+      file.on('error', () => { try { fs.unlinkSync(dest) } catch {} resolve(false) })
     })
     req.on('error', () => resolve(false))
-    req.setTimeout(10000, () => { req.destroy(); resolve(false) })
+    req.setTimeout(12000, () => { req.destroy(); resolve(false) })
   })
+}
+
+async function saveLogoToDb(db: any, brand: any, slug: string, destPath: string) {
+  // Remove existing media doc for this brand logo if any
+  await db.collection('media').deleteOne({ filename: `brand-${slug}.png` })
+  const mediaDoc = await db.collection('media').insertOne({
+    filename: `brand-${slug}.png`,
+    mimeType: 'image/png',
+    filesize: fs.statSync(destPath).size,
+    url: `/media/brand-${slug}.png`,
+    alt: brand.name?.fr || brand.name || slug,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  })
+  await db.collection('brands').updateOne({ _id: brand._id }, {
+    $set: { logo: mediaDoc.insertedId }
+  })
+}
+
+async function tryDownload(urls: string[], dest: string): Promise<boolean> {
+  for (const url of urls) {
+    const ok = await downloadFile(url, dest)
+    if (ok && fs.existsSync(dest) && fs.statSync(dest).size > 500) return true
+    if (fs.existsSync(dest)) fs.unlinkSync(dest)
+  }
+  return false
 }
 
 async function main() {
@@ -161,58 +189,35 @@ async function main() {
     }
 
     const domain = BRAND_DOMAINS[slug]
-    if (!domain) {
-      // Try Clearbit with slug-based guessing
-      const guessedDomain = `${slug.replace(/-/g, '')}.com`
-      const url = `https://logo.clearbit.com/${guessedDomain}?size=200`
-      const ok = await downloadFile(url, destPath)
-      if (ok && fs.existsSync(destPath) && fs.statSync(destPath).size > 500) {
-        downloaded++
-        // Create/update media doc and link to brand
-        const mediaDoc = await db.collection('media').insertOne({
-          filename: `brand-${slug}.png`,
-          mimeType: 'image/png',
-          filesize: fs.statSync(destPath).size,
-          url: `/media/brand-${slug}.png`,
-          alt: brand.name?.fr || brand.name || slug,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        })
-        await db.collection('brands').updateOne({ _id: brand._id }, {
-          $set: { logo: mediaDoc.insertedId }
-        })
-      } else {
-        if (fs.existsSync(destPath)) fs.unlinkSync(destPath)
-        failed++
-      }
-      continue
+    const urls: string[] = []
+
+    if (domain) {
+      // Try multiple logo sources
+      urls.push(
+        `https://img.logo.dev/${domain}?token=pk_R1LW6GmkRs6Rz1CJLT9VKw&size=200&format=png`,
+        `https://logo.clearbit.com/${domain}?size=200`,
+        `https://api.brandfetch.io/v2/brands/${domain}/logo`,
+        `https://${domain}/favicon.ico`,
+      )
+    } else {
+      const guessed = `${slug.replace(/-/g, '')}.com`
+      urls.push(
+        `https://logo.clearbit.com/${guessed}?size=200`,
+        `https://img.logo.dev/${guessed}?token=pk_R1LW6GmkRs6Rz1CJLT9VKw&size=200&format=png`,
+      )
     }
 
-    const url = `https://logo.clearbit.com/${domain}?size=200`
-    const ok = await downloadFile(url, destPath)
+    const ok = await tryDownload(urls, destPath)
 
-    if (ok && fs.existsSync(destPath) && fs.statSync(destPath).size > 500) {
+    if (ok) {
       downloaded++
-      const mediaDoc = await db.collection('media').insertOne({
-        filename: `brand-${slug}.png`,
-        mimeType: 'image/png',
-        filesize: fs.statSync(destPath).size,
-        url: `/media/brand-${slug}.png`,
-        alt: brand.name?.fr || brand.name || slug,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      })
-      await db.collection('brands').updateOne({ _id: brand._id }, {
-        $set: { logo: mediaDoc.insertedId }
-      })
+      await saveLogoToDb(db, brand, slug, destPath)
       console.log(`  ✓ ${slug}`)
     } else {
-      if (fs.existsSync(destPath)) fs.unlinkSync(destPath)
       failed++
     }
 
-    // Small delay to be polite to Clearbit
-    await new Promise(r => setTimeout(r, 200))
+    await new Promise(r => setTimeout(r, 100))
   }
 
   console.log(`\nDone! Downloaded: ${downloaded}, Skipped: ${skipped}, Failed: ${failed}`)
