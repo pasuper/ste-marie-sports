@@ -157,7 +157,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                     src={brand.logo ? getMediaUrl(brand.logo) : `/media/brand-${brand.slug}.svg`}
                     alt={brand.name}
                     loading="lazy"
-                    onError={(e: any) => { e.target.src = `/media/brand-${brand.slug}.png`; e.target.onerror = null }}
                   />
                 </Link>
               ))}

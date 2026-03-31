@@ -168,7 +168,6 @@ export default function Header({ locale, siteIdentity, storeInfo, menus }: Heade
                     <img
                       src={brand.logo ? getMediaUrl(brand.logo) : `/media/brand-${brand.slug}.svg`}
                       alt={brandName}
-                      onError={(e: any) => { e.target.src = `/media/brand-${brand.slug}.png`; e.target.onerror = null }}
                     />
                   </Link>
                 )
