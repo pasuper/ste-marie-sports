@@ -76,20 +76,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                     {locale === 'fr' ? 'ACCESSOIRES' : 'ACCESSORIES'}
                   </Link>
                 </div>
-                <div className="hero__stats">
-                  <div className="hero__stat">
-                    <span className="hero__stat-number">50K+</span>
-                    <span className="hero__stat-text">{locale === 'fr' ? 'PRODUITS' : 'PRODUCTS'}</span>
-                  </div>
-                  <div className="hero__stat">
-                    <span className="hero__stat-number">4.9★</span>
-                    <span className="hero__stat-text">{locale === 'fr' ? 'ÉVALUATION' : 'RATING'}</span>
-                  </div>
-                  <div className="hero__stat">
-                    <span className="hero__stat-number">24H</span>
-                    <span className="hero__stat-text">{locale === 'fr' ? 'LIVRAISON' : 'SHIPPING'}</span>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
