@@ -4180,10 +4180,10 @@ body {
 
 .hero__slide {
   position: relative;
-  height: 700px;
+  height: 500px;
   display: flex;
   align-items: center;
-  padding-bottom: 140px;
+  padding-bottom: 80px;
 }
 
 .hero__bg {
@@ -5145,8 +5145,8 @@ body {
 
 @media (max-width: 768px) {
   .hero__slide {
-    height: 550px;
-    padding-bottom: 120px;
+    height: 400px;
+    padding-bottom: 80px;
   }
 
   .hero__content {
@@ -5299,7 +5299,7 @@ body {
 
 @media (max-width: 480px) {
   .hero__slide {
-    height: 480px;
+    height: 360px;
   }
 
   .hero__flair {
