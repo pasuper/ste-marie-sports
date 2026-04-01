@@ -395,13 +395,50 @@ export interface Vehicle {
   title: string;
   slug: string;
   stockNumber?: string | null;
-  condition: 'new' | 'used' | 'certified';
-  vehicleType: 'atv' | 'utv' | 'snowmobile' | 'motorcycle' | 'watercraft' | 'spyder';
-  brand?: (string | null) | Brand;
-  year?: number | null;
-  model?: string | null;
+  condition: 'new' | 'used' | 'demo' | 'certified';
+  vehicleType: 'atv' | 'utv' | 'snowmobile' | 'motorcycle' | 'pwc' | 'spyder' | 'marine' | 'other';
+  brand: string | Brand;
+  year: number;
+  model: string;
   trim?: string | null;
-  mileage?: number | null;
+  submodel?: string | null;
+  price?: number | null;
+  msrp?: number | null;
+  salePrice?: number | null;
+  specifications?: {
+    engineType?: string | null;
+    engineSize?: string | null;
+    horsepower?: number | null;
+    torque?: number | null;
+    transmission?: ('automatic' | 'manual' | 'cvt' | 'semi-automatic') | null;
+    driveType?: ('2wd' | '4wd' | 'awd') | null;
+    fuelType?: ('gasoline' | 'diesel' | 'electric' | 'hybrid') | null;
+    fuelCapacity?: number | null;
+    mileage?: number | null;
+    mileageUnit?: ('km' | 'mi' | 'hrs') | null;
+    hours?: number | null;
+    exteriorColor?: string | null;
+    vin?: string | null;
+  };
+  thumbnail?: (string | null) | Media;
+  images?:
+    | {
+        image?: (string | null) | Media;
+        id?: string | null;
+      }[]
+    | null;
+  videos?:
+    | {
+        url?: string | null;
+        title?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  shortDescription?: string | null;
+  /**
+   * Original dealer website URL
+   */
+  sourceUrl?: string | null;
   description?: {
     root: {
       type: string;
@@ -417,16 +454,16 @@ export interface Vehicle {
     };
     [k: string]: unknown;
   } | null;
-  price?: number | null;
-  thumbnail?: (string | null) | Media;
-  images?:
+  features?:
     | {
-        image?: (string | null) | Media;
+        feature?: string | null;
         id?: string | null;
       }[]
     | null;
-  isActive?: boolean | null;
+  isAvailable?: boolean | null;
   isFeatured?: boolean | null;
+  isOnSale?: boolean | null;
+  soldDate?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -597,6 +634,13 @@ export interface Page {
     };
     [k: string]: unknown;
   } | null;
+  sections?:
+    | {
+        heading?: string | null;
+        body?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   excerpt?: string | null;
   featuredImage?: (string | null) | Media;
   seoTitle?: string | null;
@@ -633,6 +677,69 @@ export interface Menu {
         openInNewTab?: boolean | null;
         highlight?: boolean | null;
         icon?: (string | null) | Media;
+        /**
+         * Enable mega menu dropdown for this item
+         */
+        hasMegaMenu?: boolean | null;
+        /**
+         * Featured image in vehicles column
+         */
+        vehicleImage?: (string | null) | Media;
+        /**
+         * Links in the Vehicles column
+         */
+        vehicleLinks?:
+          | {
+              label: string;
+              url?: string | null;
+              page?: (string | null) | Page;
+              highlight?: boolean | null;
+              openInNewTab?: boolean | null;
+              id?: string | null;
+            }[]
+          | null;
+        /**
+         * Title for the Parts column (default: "Pièces")
+         */
+        partsTitle?: string | null;
+        /**
+         * Links in the Parts column
+         */
+        partsLinks?:
+          | {
+              label: string;
+              url?: string | null;
+              page?: (string | null) | Page;
+              highlight?: boolean | null;
+              openInNewTab?: boolean | null;
+              id?: string | null;
+            }[]
+          | null;
+        /**
+         * Title for the Accessories column (default: "Accessoires")
+         */
+        accessoriesTitle?: string | null;
+        /**
+         * Links in the Accessories column
+         */
+        accessoriesLinks?:
+          | {
+              label: string;
+              url?: string | null;
+              page?: (string | null) | Page;
+              highlight?: boolean | null;
+              openInNewTab?: boolean | null;
+              id?: string | null;
+            }[]
+          | null;
+        /**
+         * Show brands row at bottom of mega menu
+         */
+        showBrands?: boolean | null;
+        /**
+         * Brands to show in the mega menu
+         */
+        brands?: (string | Brand)[] | null;
         id?: string | null;
       }[]
     | null;
@@ -1042,9 +1149,27 @@ export interface VehiclesSelect<T extends boolean = true> {
   year?: T;
   model?: T;
   trim?: T;
-  mileage?: T;
-  description?: T;
+  submodel?: T;
   price?: T;
+  msrp?: T;
+  salePrice?: T;
+  specifications?:
+    | T
+    | {
+        engineType?: T;
+        engineSize?: T;
+        horsepower?: T;
+        torque?: T;
+        transmission?: T;
+        driveType?: T;
+        fuelType?: T;
+        fuelCapacity?: T;
+        mileage?: T;
+        mileageUnit?: T;
+        hours?: T;
+        exteriorColor?: T;
+        vin?: T;
+      };
   thumbnail?: T;
   images?:
     | T
@@ -1052,8 +1177,26 @@ export interface VehiclesSelect<T extends boolean = true> {
         image?: T;
         id?: T;
       };
-  isActive?: T;
+  videos?:
+    | T
+    | {
+        url?: T;
+        title?: T;
+        id?: T;
+      };
+  shortDescription?: T;
+  sourceUrl?: T;
+  description?: T;
+  features?:
+    | T
+    | {
+        feature?: T;
+        id?: T;
+      };
+  isAvailable?: T;
   isFeatured?: T;
+  isOnSale?: T;
+  soldDate?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1187,6 +1330,13 @@ export interface PagesSelect<T extends boolean = true> {
   slug?: T;
   template?: T;
   content?: T;
+  sections?:
+    | T
+    | {
+        heading?: T;
+        body?: T;
+        id?: T;
+      };
   excerpt?: T;
   featuredImage?: T;
   seoTitle?: T;
@@ -1215,6 +1365,42 @@ export interface MenusSelect<T extends boolean = true> {
         openInNewTab?: T;
         highlight?: T;
         icon?: T;
+        hasMegaMenu?: T;
+        vehicleImage?: T;
+        vehicleLinks?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+              page?: T;
+              highlight?: T;
+              openInNewTab?: T;
+              id?: T;
+            };
+        partsTitle?: T;
+        partsLinks?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+              page?: T;
+              highlight?: T;
+              openInNewTab?: T;
+              id?: T;
+            };
+        accessoriesTitle?: T;
+        accessoriesLinks?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+              page?: T;
+              highlight?: T;
+              openInNewTab?: T;
+              id?: T;
+            };
+        showBrands?: T;
+        brands?: T;
         id?: T;
       };
   isActive?: T;

@@ -2,6 +2,7 @@ import { getPayload, asLocale } from '@/lib/payload'
 import { Providers } from '@/providers'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import CookieConsent from '@/components/CookieConsent'
 import { unstable_cache } from 'next/cache'
 
 interface LayoutProps {
@@ -48,6 +49,7 @@ export default async function FrontendLayout({ children, params }: LayoutProps) 
         menus={menusByLocation}
       />
       <main>{children}</main>
+      <CookieConsent locale={locale} />
       <Footer
         locale={locale}
         siteIdentity={siteIdentity}

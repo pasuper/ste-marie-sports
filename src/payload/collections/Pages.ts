@@ -24,6 +24,16 @@ export const Pages: CollectionConfig = {
       ],
     },
     { name: 'content', type: 'richText', localized: true },
+    {
+      name: 'sections',
+      type: 'array',
+      label: 'Sections',
+      localized: true,
+      fields: [
+        { name: 'heading', type: 'text', label: 'Titre de section' },
+        { name: 'body', type: 'textarea', label: 'Contenu', admin: { rows: 8 } },
+      ],
+    },
     { name: 'excerpt', type: 'textarea', localized: true },
     { name: 'featuredImage', type: 'upload', relationTo: 'media' },
     { name: 'seoTitle', type: 'text', localized: true },

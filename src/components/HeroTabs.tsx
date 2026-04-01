@@ -7,9 +7,10 @@ import { t } from '@/lib/i18n'
 
 interface HeroTabsProps {
   locale: string
+  vehicleImages?: Record<string, string>
 }
 
-export default function HeroTabs({ locale }: HeroTabsProps) {
+export default function HeroTabs({ locale, vehicleImages = {} }: HeroTabsProps) {
   const router = useRouter()
   const loc = locale as 'fr' | 'en'
   const [activeTab, setActiveTab] = useState('vehicles')
@@ -133,14 +134,25 @@ export default function HeroTabs({ locale }: HeroTabsProps) {
       <div className="hero-tabs__content">
         {activeTab === 'vehicles' && (
           <div className="hero-tabs__panel hero-tabs__panel--vehicles">
-            {vehicleTypes.map((vehicle) => (
-              <Link key={vehicle.id} href={vehicle.link} className="hero-tabs__vehicle-btn">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d={vehicle.icon}/>
-                </svg>
-                <span>{vehicle.name}</span>
-              </Link>
-            ))}
+            {vehicleTypes.map((vehicle) => {
+              const img = vehicleImages[vehicle.id]
+              return (
+                <Link key={vehicle.id} href={vehicle.link} className={`hero-tabs__vehicle-btn${img ? ' hero-tabs__vehicle-btn--photo' : ''}`}>
+                  {img && (
+                    <div className="hero-tabs__vehicle-photo">
+                      <img src={img} alt={vehicle.name} />
+                      <div className="hero-tabs__vehicle-photo-overlay" />
+                    </div>
+                  )}
+                  <div className="hero-tabs__vehicle-inner">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <path d={vehicle.icon}/>
+                    </svg>
+                    <span>{vehicle.name}</span>
+                  </div>
+                </Link>
+              )
+            })}
           </div>
         )}
 
