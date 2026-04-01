@@ -10,11 +10,10 @@ const AUTH_COOKIE = 'stemarie_site_access'
 function GateContent() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState(false)
-  const [authenticated, setAuthenticated] = useState(false)
 
   useEffect(() => {
     if (document.cookie.indexOf(AUTH_COOKIE + '=granted') !== -1) {
-      setAuthenticated(true)
+      window.location.replace('/fr')
     }
   }, [])
 
@@ -26,30 +25,6 @@ function GateContent() {
     } else {
       setError(true)
     }
-  }
-
-  if (authenticated) {
-    return (
-      <div className="gate-page">
-        <div className="gate-page__bg" />
-        <div className="gate-page__overlay" />
-        <div className="gate-page__card">
-          <div className="gate-page__logo">
-            <img src="/logo-stemarie.png" alt="Ste-Marie Sports" />
-          </div>
-          <h1 className="gate-page__title">En construction</h1>
-          <p className="gate-page__subtitle">
-            Notre nouveau site web arrive bientôt!<br /><br />
-            Nous travaillons fort pour vous offrir la meilleure
-            expérience en ligne pour vos véhicules, pièces et accessoires.
-          </p>
-          <div style={{ width: 60, height: 3, background: 'rgba(255,255,255,0.3)', margin: '32px auto', borderRadius: 2 }} />
-          <p className="gate-page__contact">
-            Contactez-nous: <a href="mailto:michel.aubin@pasuper.com">michel.aubin@pasuper.com</a>
-          </p>
-        </div>
-      </div>
-    )
   }
 
   return (

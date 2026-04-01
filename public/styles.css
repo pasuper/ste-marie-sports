@@ -21083,7 +21083,7 @@ body {
 .gate-page__overlay {
   position: fixed;
   inset: 0;
-  background: linear-gradient(135deg, rgba(230, 30, 37, 0.85) 0%, rgba(124, 18, 21, 0.9) 100%);
+  background: linear-gradient(135deg, rgba(180, 15, 20, 0.70) 0%, rgba(60, 5, 8, 0.80) 100%);
   z-index: 1;
 }
 
