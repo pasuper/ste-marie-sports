@@ -2,7 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const NEXT_PORT = 3003;
-const MEDIA_DIR = path.join(__dirname, 'public', 'media');
+const PUBLIC_DIR = path.join(__dirname, 'public');
 
 const MIME = {
   '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png',
@@ -11,14 +11,13 @@ const MIME = {
 };
 
 const server = http.createServer((req, res) => {
-  // Serve /media/ files directly from disk
-  if (req.url.startsWith('/media/')) {
-    const filePath = path.join(MEDIA_DIR, req.url.slice(7).split('?')[0]);
-    const safePath = path.resolve(filePath);
-    if (!safePath.startsWith(MEDIA_DIR)) { res.writeHead(403); res.end(); return; }
+  // Serve static files directly from public/ directory
+  const urlPath = req.url.split('?')[0];
+  const publicPath = path.join(PUBLIC_DIR, urlPath);
+  const safePath = path.resolve(publicPath);
+  if (safePath.startsWith(PUBLIC_DIR)) {
     fs.stat(safePath, (err, stats) => {
       if (err || !stats.isFile()) {
-        // Fall through to Next.js if not found on disk
         proxyToNext(req, res);
         return;
       }
