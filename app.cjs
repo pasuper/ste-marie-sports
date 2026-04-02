@@ -1,14 +1,16 @@
 const http = require('http');
-const NEXT_PORT = 3002;
+const NEXT_PORT = 3003;
 
-// Passenger sets PORT dynamically — we listen on that and proxy to Next.js
 const server = http.createServer((req, res) => {
+  const headers = Object.assign({}, req.headers);
+  headers.host = 'localhost:' + NEXT_PORT;
+
   const opts = {
     hostname: '127.0.0.1',
     port: NEXT_PORT,
     path: req.url,
     method: req.method,
-    headers: req.headers,
+    headers: headers,
   };
 
   const proxy = http.request(opts, (proxyRes) => {
@@ -24,7 +26,8 @@ const server = http.createServer((req, res) => {
   req.pipe(proxy, { end: true });
 });
 
+// Passenger sets PORT dynamically — listen on that
 const port = process.env.PORT || '3002';
 server.listen(parseInt(port), '0.0.0.0', () => {
-  console.log('Proxy listening on ' + port + ' -> Next.js on ' + NEXT_PORT);
+  console.log('Proxy on :' + port + ' -> Next.js on :' + NEXT_PORT);
 });
