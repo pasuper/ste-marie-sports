@@ -150,5 +150,32 @@
     "postalCode": "Postal Code",
     "phone": "Phone",
     "email": "Email"
+  },
+  "rental": {
+    "title": "Rent a Spyder or Ryker",
+    "subtitle": "Experience Can-Am for a day",
+    "chooseVehicle": "Choose this vehicle",
+    "availability": "Availability",
+    "allVehicles": "All vehicles",
+    "fourHours": "4 hours",
+    "oneDay": "1 day",
+    "weekend": "Weekend",
+    "maxKm": "km max",
+    "bookingTitle": "Reserve this vehicle",
+    "name": "Full name",
+    "phone": "Phone",
+    "email": "Email",
+    "driverLicense": "Driver's license number",
+    "rentalType": "Rental duration",
+    "selectDate": "Select a date",
+    "deposit": "Deposit required",
+    "reserve": "Reserve — $100 deposit",
+    "processing": "Processing...",
+    "confirmationTitle": "Reservation confirmed!",
+    "confirmationMessage": "You will receive a confirmation email. Your booking number is:",
+    "backToRentals": "Back to rentals",
+    "available": "Available",
+    "unavailable": "Unavailable",
+    "noVehicles": "No rental vehicles available at this time."
   }
 }

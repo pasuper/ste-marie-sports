@@ -28,6 +28,34 @@ export async function POST(request: NextRequest) {
   switch (event.type) {
     case 'payment_intent.succeeded': {
       const paymentIntent = event.data.object as Stripe.PaymentIntent
+
+      // Handle rental deposit
+      if (paymentIntent.metadata?.type === 'rental-deposit') {
+        const bookings = await payload.find({
+          collection: 'rental-bookings',
+          where: { stripePaymentIntentId: { equals: paymentIntent.id } },
+          limit: 1,
+        })
+        if (bookings.docs[0]) {
+          await payload.update({
+            collection: 'rental-bookings',
+            id: bookings.docs[0].id,
+            data: { paymentStatus: 'paid', status: 'confirmed' },
+          })
+          // Block dates on the vehicle
+          const booking = bookings.docs[0] as any
+          const vehicleId = typeof booking.rentalVehicle === 'object' ? booking.rentalVehicle.id : booking.rentalVehicle
+          if (vehicleId) {
+            const vehicle = await payload.findByID({ collection: 'rental-vehicles', id: vehicleId })
+            const existing = ((vehicle as any).blockedDates || []) as any[]
+            const newDates = getDatesRange(booking.startDate, booking.endDate)
+            const merged = [...existing, ...newDates.map((d: string) => ({ date: d }))]
+            await payload.update({ collection: 'rental-vehicles', id: vehicleId, data: { blockedDates: merged } })
+          }
+        }
+        break
+      }
+
       // Update order payment status
       const orders = await payload.find({
         collection: 'orders',
@@ -109,4 +137,15 @@ export async function POST(request: NextRequest) {
   }
 
   return NextResponse.json({ received: true })
+}
+
+function getDatesRange(start: string, end: string): string[] {
+  const dates: string[] = []
+  const d = new Date(start.split('T')[0])
+  const e = new Date((end || start).split('T')[0])
+  while (d <= e) {
+    dates.push(d.toISOString().split('T')[0])
+    d.setDate(d.getDate() + 1)
+  }
+  return dates
 }

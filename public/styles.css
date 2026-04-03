@@ -21222,3 +21222,580 @@ body {
   .gate-page__title { font-size: 36px; }
   .gate-page__logo img { max-width: 200px; }
 }
+
+/* ============================================
+   RENTAL / LOCATION PAGE
+   ============================================ */
+.rental-hero {
+  position: relative;
+  background: #0d0d0d;
+  padding: 100px 0 60px;
+  text-align: center;
+  overflow: hidden;
+}
+.rental-hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(230,30,37,0.15) 0%, rgba(0,0,0,0.95) 100%);
+}
+.rental-hero__content {
+  position: relative;
+  z-index: 1;
+}
+.rental-hero__eyebrow {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: var(--ps-color-primary);
+  margin-bottom: 16px;
+  padding: 6px 16px;
+  border: 1px solid rgba(230,30,37,0.3);
+  border-radius: 20px;
+}
+.rental-hero h1 {
+  font-size: 48px;
+  font-weight: 900;
+  color: #fff;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+.rental-hero p {
+  font-size: 18px;
+  color: rgba(255,255,255,0.6);
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* Vehicle Grid */
+.rental-vehicles {
+  padding: 64px 0;
+  background: var(--ps-color-gray-50, #f8f8f8);
+}
+.rental-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.rental-empty {
+  text-align: center;
+  padding: 80px 20px;
+  font-size: 18px;
+  color: var(--ps-color-gray-500);
+}
+
+/* Vehicle Card */
+.rental-card {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.rental-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.12);
+}
+.rental-card--active {
+  border-color: var(--ps-color-primary);
+  box-shadow: 0 0 0 3px rgba(230,30,37,0.15);
+}
+.rental-card__image {
+  position: relative;
+  aspect-ratio: 16/10;
+  background: #f0f0f0;
+  overflow: hidden;
+}
+.rental-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+.rental-card:hover .rental-card__image img {
+  transform: scale(1.05);
+}
+.rental-card__placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #e8e8e8, #d0d0d0);
+  color: #999;
+}
+.rental-card__type {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(0,0,0,0.7);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
+.rental-card__body {
+  padding: 20px;
+}
+.rental-card__body h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 6px;
+}
+.rental-card__desc {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+/* Pricing Table */
+.rental-card__pricing {
+  border: 1px solid #eee;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.rental-card__pricing-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 12px;
+  padding: 10px 14px;
+  align-items: center;
+  font-size: 13px;
+  border-bottom: 1px solid #f0f0f0;
+}
+.rental-card__pricing-row:last-child { border-bottom: none; }
+.rental-card__pricing-row:nth-child(odd) { background: #fafafa; }
+.rental-card__pricing-label {
+  font-weight: 600;
+  color: #333;
+}
+.rental-card__pricing-price {
+  font-weight: 800;
+  color: var(--ps-color-primary);
+  font-size: 15px;
+  text-align: right;
+}
+.rental-card__pricing-km {
+  color: #999;
+  font-size: 12px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.rental-card__btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px;
+  background: var(--ps-color-primary);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.rental-card__btn:hover { opacity: 0.85; }
+
+/* Calendar Section */
+.rental-calendar-section {
+  padding: 64px 0;
+  background: #fff;
+}
+.rental-calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+.rental-calendar-header h2 {
+  font-size: 28px;
+  font-weight: 800;
+}
+.rental-calendar-filter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+.rental-calendar-filter__clear {
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 12px;
+  cursor: pointer;
+  color: #666;
+  transition: all 0.2s;
+}
+.rental-calendar-filter__clear:hover { border-color: var(--ps-color-primary); color: var(--ps-color-primary); }
+.rental-calendar-filter__hint { font-size: 13px; color: #999; }
+
+/* Calendar Component */
+.rental-calendar { position: relative; }
+.rental-calendar__nav {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.rental-calendar__arrow {
+  background: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #333;
+}
+.rental-calendar__arrow:hover { background: #eee; }
+.rental-calendar__months {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+.rental-calendar__month-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 12px;
+  text-transform: capitalize;
+}
+.rental-calendar__day-names {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  margin-bottom: 4px;
+}
+.rental-calendar__day-name {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: #999;
+  padding: 6px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.rental-calendar__days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+.rental-calendar__day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 8px;
+  border: none;
+  cursor: default;
+  background: transparent;
+  color: #333;
+  transition: all 0.15s;
+}
+.rental-calendar__day--empty { visibility: hidden; }
+.rental-calendar__day--past { color: #ccc; }
+.rental-calendar__day--blocked {
+  background: #fef2f2;
+  color: #dc2626;
+  text-decoration: line-through;
+}
+.rental-calendar__day--available {
+  background: #f0fdf4;
+  color: #16a34a;
+  cursor: pointer;
+  font-weight: 600;
+}
+.rental-calendar__day--available:hover {
+  background: #16a34a;
+  color: #fff;
+  transform: scale(1.1);
+}
+.rental-calendar__day--selected {
+  background: var(--ps-color-primary) !important;
+  color: #fff !important;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(230,30,37,0.3);
+}
+.rental-calendar__legend {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  margin-top: 20px;
+}
+.rental-calendar__legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #666;
+}
+.rental-calendar__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.rental-calendar__dot--available { background: #16a34a; }
+.rental-calendar__dot--blocked { background: #dc2626; }
+
+/* Booking Form */
+.rental-booking {
+  padding: 64px 0;
+  background: var(--ps-color-gray-50, #f8f8f8);
+}
+.rental-booking__layout {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 32px;
+  align-items: start;
+}
+.rental-booking__form {
+  background: #fff;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+}
+.rental-booking__form h2 {
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 24px;
+}
+.rental-booking__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.rental-booking__field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.rental-booking__field input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: border-color 0.2s;
+}
+.rental-booking__field input:focus {
+  outline: none;
+  border-color: var(--ps-color-primary);
+  box-shadow: 0 0 0 3px rgba(230,30,37,0.08);
+}
+.rental-booking__type-btns {
+  display: flex;
+  gap: 8px;
+}
+.rental-booking__type-btn {
+  flex: 1;
+  padding: 10px;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+.rental-booking__type-btn:hover { border-color: var(--ps-color-primary); }
+.rental-booking__type-btn--active {
+  background: var(--ps-color-primary);
+  color: #fff;
+  border-color: var(--ps-color-primary);
+}
+.rental-booking__error {
+  color: #dc2626;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+.rental-booking__submit {
+  width: 100%;
+  padding: 16px;
+  background: var(--ps-color-primary);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.rental-booking__submit:hover { opacity: 0.85; }
+
+/* Summary Card */
+.rental-booking__summary {
+  background: #1a1a2e;
+  color: #fff;
+  border-radius: 16px;
+  padding: 28px;
+  position: sticky;
+  top: 120px;
+}
+.rental-booking__summary h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.rental-booking__summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 14px;
+  color: rgba(255,255,255,0.7);
+}
+.rental-booking__summary-row span:last-child { font-weight: 600; color: #fff; }
+.rental-booking__summary-row--total {
+  border-top: 1px solid rgba(255,255,255,0.15);
+  margin-top: 8px;
+  padding-top: 16px;
+  font-size: 16px;
+}
+.rental-booking__summary-row--total span:last-child {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--ps-color-primary);
+}
+.rental-booking__summary-note {
+  margin-top: 16px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.4);
+  line-height: 1.5;
+}
+
+/* Stripe Payment */
+.rental-payment {
+  padding: 64px 0;
+  background: #fff;
+}
+.rental-payment__card {
+  max-width: 500px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+}
+.rental-payment__card h2 {
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+.rental-payment__amount {
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--ps-color-primary);
+  margin-bottom: 24px;
+}
+.rental-payment__btn {
+  width: 100%;
+  padding: 16px;
+  margin-top: 20px;
+  background: var(--ps-color-primary);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.rental-payment__btn:hover { opacity: 0.85; }
+.rental-payment__btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.rental-payment__error { color: #dc2626; font-size: 13px; margin-top: 12px; }
+
+/* Confirmation */
+.rental-confirmation {
+  padding: 80px 0;
+  background: var(--ps-color-gray-50, #f8f8f8);
+  text-align: center;
+}
+.rental-confirmation__card {
+  max-width: 480px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 20px;
+  padding: 48px 36px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+}
+.rental-confirmation__card svg { margin-bottom: 20px; }
+.rental-confirmation__card h2 {
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+.rental-confirmation__card p {
+  color: #666;
+  margin-bottom: 16px;
+}
+.rental-confirmation__number {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--ps-color-primary);
+  background: #fef2f2;
+  padding: 12px 24px;
+  border-radius: 8px;
+  display: inline-block;
+  margin-bottom: 24px;
+  letter-spacing: 1px;
+}
+.rental-confirmation__btn {
+  display: inline-block;
+  padding: 14px 28px;
+  background: #1a1a2e;
+  color: #fff;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+.rental-confirmation__btn:hover { opacity: 0.85; }
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .rental-grid { grid-template-columns: repeat(2, 1fr); }
+  .rental-booking__layout { grid-template-columns: 1fr; }
+  .rental-booking__summary { position: static; }
+}
+@media (max-width: 768px) {
+  .rental-hero h1 { font-size: 32px; }
+  .rental-hero { padding: 64px 0 40px; }
+  .rental-calendar__months { grid-template-columns: 1fr; }
+  .rental-grid { grid-template-columns: 1fr; }
+  .rental-calendar-header { flex-direction: column; gap: 12px; align-items: flex-start; }
+}
+@media (max-width: 480px) {
+  .rental-booking__type-btns { flex-direction: column; }
+  .rental-booking__form { padding: 20px; }
+}

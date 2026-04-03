@@ -20,6 +20,8 @@ import { Pages } from './src/payload/collections/Pages'
 import { Menus } from './src/payload/collections/Menus'
 import { HeroSections } from './src/payload/collections/HeroSections'
 import { FormSubmissions } from './src/payload/collections/FormSubmissions'
+import { RentalVehicles } from './src/payload/collections/RentalVehicles'
+import { RentalBookings } from './src/payload/collections/RentalBookings'
 import { SiteIdentity } from './src/payload/globals/SiteIdentity'
 import { StoreInformation } from './src/payload/globals/StoreInformation'
 import { CheckoutSettings } from './src/payload/globals/CheckoutSettings'
@@ -58,6 +60,8 @@ export default buildConfig({
     Menus,
     HeroSections,
     FormSubmissions,
+    RentalVehicles,
+    RentalBookings,
   ],
   globals: [
     SiteIdentity,
