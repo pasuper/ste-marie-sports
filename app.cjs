@@ -1,7 +1,7 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
-const NEXT_PORT = 3003;
+const NEXT_PORT = 3004;
 const PUBLIC_DIR = path.join(__dirname, 'public');
 
 const MIME = {
